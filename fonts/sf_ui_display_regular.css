@@ -1,0 +1,9 @@
+@font-face {
+	font-family: 'SF UI Display Regular';
+	src: url('../fonts/sf_ui_display_regular.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/sf_ui_display_regular.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/sf_ui_display_regular.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/sf_ui_display_regular.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/sf_ui_display_regular.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/sf_ui_display_regular.svg#sf_ui_display_regular') format('svg'); /* Chrome < 4, Legacy iOS */
+}
