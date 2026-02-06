@@ -15,7 +15,7 @@ function App() {
         Тестовая кнопка
       </button>
       <div className="mt-4 p-64 bg-green-100 border border-green-400 rounded">
-        Если видишь стили — всё настроено правильно!
+        Если видишь стили — всё настроено правильноапапапапап!
       </div>
     </div>
   )
