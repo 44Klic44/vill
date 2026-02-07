@@ -8,7 +8,7 @@ import Trash from "./pages/Trash"
 import TaskDetails from "./pages/TaskDetails"
 import { Toaster } from "sonner"
 import { useSelector } from 'react-redux'
-
+import Sidebar from './components/Sidebar'
 
 function Layout(){
   const {user} = useSelector((state) => state.auth)
@@ -18,7 +18,7 @@ function Layout(){
   return user || isDev ? ( //👈 Это временная проверка для редактирования страниц потом удалить !!!
   <div className="w-full h-screen flex flex-col md:flex-row">
 <div className="w-1/5 b-screen bg-white sticky top-0 hidden md:block">
- {/* <Sidebar/> */}
+ <Sidebar/>
 </div>
 
 
