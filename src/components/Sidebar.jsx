@@ -80,13 +80,13 @@ const Sidebar = () => {
         )}
       >
         {el.icon}
-        <span className='hover:text-[#000000]'>{el.label}</span>
+        <span className='hover:text-[#ffffff]'>{el.label}</span>
       </Link>
     );
   };
 
   return (
-    <div className='w-full h-full flex flex-col gap-6 p-5'>
+<div className='w-full h-full flex flex-col gap-6 p-5'>
       <h1 className='flex gap-1 items-center'>
         <p className='bg-blue-500 p-2 rounded-full'>
           <MdOutlineAddTask className='text-white text-2xl font-black' />
