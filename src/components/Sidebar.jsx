@@ -31,7 +31,7 @@ const linkData = [
   },
   {
     label: "In Progress",
-    link: "in-progress/in progress",
+    link: "in-progress/in-progress",
     icon: <MdOutlinePendingActions />,
   },
   {
@@ -75,7 +75,7 @@ const Sidebar = () => {
         onClick={closeSidebar}
         to={el.link}
         className={clsx(
-          "w-fult lg:w-3/4 flex gap-2 px-3 py-2 rounded-full items-center text-gray-800 dark:text-gray-400 text-base hover:bg-blue-300",
+          "w-full lg:w-3/4 flex gap-2 px-3 py-2 rounded-full items-center text-gray-800 dark:text-gray-400 text-base hover:bg-blue-300",
           path === el.link.split("/")[0] ? "bg-blue-500 text-neutral-100" : ""
         )}
       >

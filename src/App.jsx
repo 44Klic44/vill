@@ -10,6 +10,11 @@ import { Toaster } from "sonner"
 import { useSelector } from 'react-redux'
 import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
+import { Transition } from '@headlessui/react'
+import { Fragment, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { IoMdClose } from "react-icons/io";
+import { setOpenSidebar } from "./redux/slices/authSlice";
 
 function Layout(){
   const {user} = useSelector((state) => state.auth)
@@ -22,6 +27,10 @@ function Layout(){
       <div className="w-full md:w-1/5 h-screen bg-white sticky top-0 hidden md:block">
         <Sidebar/>
       </div>
+
+   {/* Мобильная навигация */}
+    <MobileSidebar/>
+
 
       {/* Основная область с Navbar и контентом */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -40,6 +49,56 @@ function Layout(){
     <Navigate to="/log-in" state={{from: location}} replace/>
   )
 }
+
+const  MobileSidebar = ()=> {
+  const { isSidebarOpen } = useSelector((state) => state.auth);
+  const mobileMenuRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const closeSidebar = () => {
+    dispatch(setOpenSidebar(false));
+  };
+
+  return (
+    <>
+      <Transition
+        show={isSidebarOpen}
+        as={Fragment}
+        enter='transition-opacity duration-700'
+        enterFrom='opacity-x-10'
+        enterTo='opacity-x-100'
+        leave='transition-opacity duration-700'
+        leaveFrom='opacity-x-100'
+        leaveTo='opacity-x-0'
+      >
+        {(ref) => (
+          <div
+            ref={(node) => (mobileMenuRef.current = node)}
+            className={`md:hidden w-full h-full bg-black/40 transition-transform duration-700 transform
+             ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+            onClick={() => closeSidebar()}
+          >
+            <div className='bg-white w-3/4 h-full'>
+              <div className='w-full flex justify-end px-5 pt-5'>
+                <button
+                  onClick={() => closeSidebar()}
+                  className='flex justify-end items-end'
+                >
+                  <IoMdClose size={25} />
+                </button>
+              </div>
+
+              <div className='-mt-10'>
+                <Sidebar />
+              </div>
+            </div>
+          </div>
+        )}
+      </Transition>
+    </>
+  );
+};
+
 
 function App() {
   return (
