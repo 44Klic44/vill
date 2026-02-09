@@ -10,47 +10,16 @@ import {
 import { MdEditNote } from "react-icons/md";
 import clsx from "clsx";
 // import Loading from './Loading'; // Предполагается, что у вас есть компонент Loading
-// import Chart from './Chart'; // Предполагается, что у вас есть компонент Chart
+import { Chart } from '../components/Chart'; // Импортируем Chart
 // import TaskTable from './TaskTable'; // Предполагается, что у вас есть компонент TaskTable
 // import UserTable from './UserTable'; // Предполагается, что у вас есть компонент UserTable
 import { FaNewspaper } from "react-icons/fa";
 import { FaArrowsToDot } from "react-icons/fa6";
 // import { useGetDasboardStatsQuery } from '../services/api'; // Предполагается, что у вас есть API
 
-// Локальные данные для отображения (если API не работает)
-const localData = {
-  summary: {
-    totalTasks: 10,
-    tasks: {
-      todo: 6,
-      "in progress": 3,
-      completed: 1,
-    },
-  },
-  graphData: [
-    { priority: 'High', count: 5 },
-    { priority: 'Medium', count: 3 },
-    { priority: 'Low', count: 2 },
-  ],
-  last10Task: [
-    { _id: 1, title: 'Разработать дизайн', priority: 'High', status: 'todo' },
-    { _id: 2, title: 'Написать API', priority: 'Medium', status: 'in progress' },
-    { _id: 3, title: 'Протестировать систему', priority: 'Low', status: 'completed' },
-    { _id: 4, title: 'Обновить документацию', priority: 'Medium', status: 'todo' },
-    { _id: 5, title: 'Исправить баги', priority: 'High', status: 'in progress' },
-    { _id: 6, title: 'Добавить анимации', priority: 'Low', status: 'todo' },
-    { _id: 7, title: 'Оптимизировать загрузку', priority: 'Medium', status: 'completed' },
-    { _id: 8, title: 'Реализовать поиск', priority: 'High', status: 'todo' },
-    { _id: 9, title: 'Добавить фильтры', priority: 'Low', status: 'in progress' },
-    { _id: 10, title: 'Настроить деплой', priority: 'Medium', status: 'todo' },
-  ],
-  users: [
-    { _id: 1, name: 'Алексей Иванов', email: 'alex@example.com', role: 'admin' },
-    { _id: 2, name: 'Мария Петрова', email: 'maria@example.com', role: 'user' },
-    { _id: 3, name: 'Дмитрий Сидоров', email: 'dmitry@example.com', role: 'user' },
-    { _id: 4, name: 'Елена Васильева', email: 'elena@example.com', role: 'user' },
-  ],
-};
+// Импортируем данные из вашего файла
+import { chartData } from '../assets/data';
+import summary from '../assets/data';
 
 const Card = ({ label, count, bg, icon }) => {
   return (
@@ -81,8 +50,8 @@ const Dashboard = () => {
   }, []);
 
   // Используем данные из API или локальные данные, если API не работает
-  const data = localData;
-  const totals = data?.summary?.tasks || {};
+  // const data = localData;
+  const totals = summary?.tasks || {};
 
   // if (isLoading)
   //   return (
@@ -99,7 +68,7 @@ const Dashboard = () => {
     {
       _id: "1",
       label: "ВСЕГО ЗАДАЧ",
-      total: data?.summary?.totalTasks || 0,
+      total: summary?.totalTasks || 0,
       icon: <FaNewspaper />,
       bg: "bg-[#1d4ed8]",
     },
@@ -136,9 +105,9 @@ const Dashboard = () => {
 
       <div className='w-full bg-white my-16 p-4 rounded shadow-sm'>
         <h4 className='text-xl text-gray-500 font-bold mb-2'>
-          Статистика по приоритетам
+          Chart by Priority
         </h4>
-        {/* <Chart data={data?.graphData} /> */}
+        <Chart data={chartData} /> {/* Используем chartData из data.js */}
       </div>
       
       <div className='w-full flex flex-col md:flex-row gap-4 2xl:gap-10 py-8'>
