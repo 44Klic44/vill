@@ -1,134 +1,176 @@
 // assets/data.js
+
+// Создаем объект с участниками команды
+export const teamMembers = {
+  CA: { 
+    name: "Carlos Alvarez", 
+    title: "Frontend Developer", 
+    email: "carlos@example.com",
+    initials: "CA"
+  },
+  JS: { 
+    name: "Jane Smith", 
+    title: "Backend Developer", 
+    email: "jane@example.com",
+    initials: "JS"
+  },
+  AJ: { 
+    name: "Alex Johnson", 
+    title: "Full Stack Developer", 
+    email: "alex@example.com",
+    initials: "AJ"
+  },
+  EW: { 
+    name: "Emma Wilson", 
+    title: "UI/UX Designer", 
+    email: "emma@example.com",
+    initials: "EW"
+  },
+  JD: { 
+    name: "John Doe", 
+    title: "Project Manager", 
+    email: "john@example.com",
+    initials: "JD"
+  }
+};
+
 export const summary = {
   totalTasks: 12,
   last10Tasks: [
     { 
       _id: 1, 
-      title: 'Разработать дизайн', 
-      priority: 'High', 
-      status: 'todo', 
-      stage: 'in progress', 
-      review: 'Duplicate', 
-      date: '2024-01-20',
-      assets: [],
-      team: [{}]
+      title: 'Test task', 
+      priority: 'high', 
+      stage: 'todo', 
+      review: 'Duplicate',
+      date: '2024-01-15',
+      team: ['CA', 'JS', 'AJ']
     },
     { 
       _id: 2, 
-      title: 'Написать API', 
-      priority: 'Medium', 
-      status: 'in progress', 
-      stage: 'in progress', 
-      review: 'Duplicate', 
-      date: '2024-01-22',
-      assets: [],
-      team: [{}]
+      title: 'Duplicate - Duplicate - Review Code Changes', 
+      priority: 'medium', 
+      stage: 'in progress',
+      review: 'Duplicate',
+      date: '2024-01-10',
+      team: ['AJ', 'EW']
     },
     { 
       _id: 3, 
-      title: 'Протестировать систему', 
-      priority: 'Low', 
-      status: 'completed', 
-      stage: 'completed', 
-      review: 'Duplicate', 
-      date: '2024-01-18',
-      assets: [],
-      team: [{}]
+      title: 'Website Project Proposal Review', 
+      priority: 'medium', 
+      stage: 'todo',
+      review: 'Duplicate',
+      date: '2024-01-05',
+      team: ['AJ', 'EW']
     },
     { 
       _id: 4, 
-      title: 'Обновить документацию', 
-      priority: 'Medium', 
-      status: 'todo', 
-      stage: 'todo', 
-      review: 'Duplicate', 
-      date: '2024-01-25',
-      assets: [],
-      team: [{}]
+      title: 'Task Manager Youtube Video', 
+      priority: 'low', 
+      stage: 'completed',
+      review: 'Duplicate',
+      date: '2024-01-18',
+      team: ['AJ', 'EW']
     },
     { 
       _id: 5, 
-      title: 'Исправить баги', 
-      priority: 'High', 
-      status: 'in progress', 
-      stage: 'in progress', 
-      review: 'Duplicate', 
-      date: '2024-01-19',
-      assets: [],
-      team: [{}]
+      title: 'Bug Fixing', 
+      priority: 'high', 
+      stage: 'in progress',
+      review: 'Duplicate',
+      date: '2024-01-20',
+      team: ['CA', 'JD', 'JS']
     },
     { 
       _id: 6, 
-      title: 'Добавить анимации', 
-      priority: 'Low', 
-      status: 'todo', 
-      stage: 'todo', 
-      review: 'Duplicate', 
-      date: '2024-01-30',
-      assets: [],
-      team: [{}]
+      title: 'Duplicate - Website Project Proposal Changes', 
+      priority: 'medium', 
+      stage: 'todo',
+      review: 'Duplicate',
+      date: '2024-01-14',
+      team: ['AJ', 'EW']
     },
     { 
       _id: 7, 
-      title: 'Оптимизировать загрузку', 
-      priority: 'Medium', 
-      status: 'completed', 
-      stage: 'completed', 
-      review: 'Duplicate', 
-      date: '2024-01-17',
-      assets: [],
-      team: [{}]
+      title: 'Duplicate - Website Project Proposal Normal', 
+      priority: 'medium', 
+      stage: 'completed',
+      review: 'Duplicate',
+      date: '2024-01-03',
+      team: ['CA', 'JD', 'JS']
     },
     { 
       _id: 8, 
-      title: 'Реализовать поиск', 
-      priority: 'High', 
-      status: 'todo', 
-      stage: 'todo', 
-      review: 'Duplicate', 
-      date: '2024-01-28',
-      assets: [],
-      team: [{}]
+      title: 'Review Code Changes', 
+      priority: 'medium', 
+      stage: 'in progress',
+      review: 'Duplicate',
+      date: '2024-01-22',
+      team: ['AJ', 'EW']
     },
     { 
       _id: 9, 
-      title: 'Добавить фильтры', 
-      priority: 'Low', 
-      status: 'in progress', 
-      stage: 'in progress', 
-      review: 'Duplicate', 
-      date: '2024-01-23',
-      assets: [],
-      team: [{}]
+      title: 'Website Project Proposal', 
+      priority: 'high', 
+      stage: 'todo',
+      review: 'Duplicate',
+      date: '2024-01-17',
+      team: ['CA', 'JD', 'JS']
     },
     { 
       _id: 10, 
-      title: 'Настроить деплой', 
-      priority: 'Medium', 
-      status: 'todo', 
-      stage: 'todo', 
-      review: 'Duplicate', 
-      date: '2024-02-01',
-      assets: [],
-      team: [{}]
+      title: 'Design System Implementation', 
+      priority: 'low', 
+      stage: 'in progress',
+      review: 'Duplicate',
+      date: '2024-01-25',
+      team: ['EW', 'AJ']
     },
   ],
   users: [
-    { _id: 1, name: 'Алексей Иванов', email: 'alex@example.com', role: 'admin', joinDate: '2024-01-01' },
-    { _id: 2, name: 'Мария Петрова', email: 'maria@example.com', role: 'user', joinDate: '2024-01-05' },
-    { _id: 3, name: 'Дмитрий Сидоров', email: 'dmitry@example.com', role: 'user', joinDate: '2024-01-10' },
-    { _id: 4, name: 'Елена Васильева', email: 'elena@example.com', role: 'user', joinDate: '2024-01-12' },
+    { 
+      _id: 1, 
+      name: 'Алексей Иванов', 
+      email: 'alex@example.com', 
+      role: 'admin', 
+      joinDate: '2024-01-01',
+      title: 'Team Lead'
+    },
+    { 
+      _id: 2, 
+      name: 'Мария Петрова', 
+      email: 'maria@example.com', 
+      role: 'user', 
+      joinDate: '2024-01-05',
+      title: 'Frontend Developer'
+    },
+    { 
+      _id: 3, 
+      name: 'Дмитрий Сидоров', 
+      email: 'dmitry@example.com', 
+      role: 'user', 
+      joinDate: '2024-01-10',
+      title: 'Backend Developer'
+    },
+    { 
+      _id: 4, 
+      name: 'Елена Васильева', 
+      email: 'elena@example.com', 
+      role: 'user', 
+      joinDate: '2024-01-12',
+      title: 'UI/UX Designer'
+    },
   ],
   tasks: {
-    todo: 8,
+    todo: 5,
     "in progress": 4,
     completed: 2,
   },
-  // Данные для графика в формате, который ожидает Chart компонент
   graphData: [
-    { name: 'High', total: 4 },
-    { name: 'Medium', total: 4 },
-    { name: 'Low', total: 4 },
+    { name: 'High', total: 3 },
+    { name: 'Medium', total: 5 },
+    { name: 'Low', total: 2 },
   ]
 };
 
@@ -145,37 +187,6 @@ export const chartData = [
   {
     name: "Low",
     total: 13,
-  },
-];
-
-// Данные для задач (примерная структура)
-export const tasks = [
-  {
-    id: "65", 
-    title: 'Разработать дизайн', 
-    priority: 'High', 
-    stage: 'in progress', 
-    date: '2024-01-20',
-    assets: [],
-    team: [{}],
-  },
-  {
-    id: "66", 
-    title: 'Написать API', 
-    priority: 'Medium', 
-    stage: 'todo', 
-    date: '2024-01-22',
-    assets: [],
-    team: [{}],
-  },
-  {
-    id: "67", 
-    title: 'Протестировать систему', 
-    priority: 'Low', 
-    stage: 'completed', 
-    date: '2024-01-18',
-    assets: [],
-    team: [{}],
   },
 ];
 
