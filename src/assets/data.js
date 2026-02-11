@@ -1,6 +1,5 @@
-// assets/data.js
 
-// Создаем объект с участниками команды
+
 export const teamMembers = {
   CA: { 
     name: "Carlos Alvarez", 
@@ -43,7 +42,7 @@ export const summary = {
       priority: 'high', 
       stage: 'todo', 
       review: 'Duplicate',
-      date: '2024-01-15',
+      date: '2026-01-15',
       team: ['CA', 'JS', 'AJ']
     },
     { 
@@ -52,7 +51,7 @@ export const summary = {
       priority: 'medium', 
       stage: 'in progress',
       review: 'Duplicate',
-      date: '2024-01-10',
+      date: '2026-01-10',
       team: ['AJ', 'EW']
     },
     { 
@@ -61,7 +60,7 @@ export const summary = {
       priority: 'medium', 
       stage: 'todo',
       review: 'Duplicate',
-      date: '2024-01-05',
+      date: '2026-01-05',
       team: ['AJ', 'EW']
     },
     { 
@@ -70,7 +69,7 @@ export const summary = {
       priority: 'low', 
       stage: 'completed',
       review: 'Duplicate',
-      date: '2024-01-18',
+      date: '2026-01-18',
       team: ['AJ', 'EW']
     },
     { 
@@ -79,7 +78,7 @@ export const summary = {
       priority: 'high', 
       stage: 'in progress',
       review: 'Duplicate',
-      date: '2024-01-20',
+      date: '2026-01-20',
       team: ['CA', 'JD', 'JS']
     },
     { 
@@ -88,7 +87,7 @@ export const summary = {
       priority: 'medium', 
       stage: 'todo',
       review: 'Duplicate',
-      date: '2024-01-14',
+      date: '2026-01-14',
       team: ['AJ', 'EW']
     },
     { 
@@ -97,7 +96,7 @@ export const summary = {
       priority: 'medium', 
       stage: 'completed',
       review: 'Duplicate',
-      date: '2024-01-03',
+      date: '2026-01-03',
       team: ['CA', 'JD', 'JS']
     },
     { 
@@ -106,7 +105,7 @@ export const summary = {
       priority: 'medium', 
       stage: 'in progress',
       review: 'Duplicate',
-      date: '2024-01-22',
+      date: '2026-01-22',
       team: ['AJ', 'EW']
     },
     { 
@@ -115,7 +114,7 @@ export const summary = {
       priority: 'high', 
       stage: 'todo',
       review: 'Duplicate',
-      date: '2024-01-17',
+      date: '2026-01-17',
       team: ['CA', 'JD', 'JS']
     },
     { 
@@ -124,7 +123,7 @@ export const summary = {
       priority: 'low', 
       stage: 'in progress',
       review: 'Duplicate',
-      date: '2024-01-25',
+      date: '2026-01-25',
       team: ['EW', 'AJ']
     },
   ],
@@ -134,7 +133,9 @@ export const summary = {
       name: 'Алексей Иванов', 
       email: 'alex@example.com', 
       role: 'admin', 
-      joinDate: '2024-01-01',
+      joinDate: '2026-01-01',
+      createdAt: '2026-01-01T10:30:00Z',
+      isActive: true,
       title: 'Team Lead'
     },
     { 
@@ -142,7 +143,9 @@ export const summary = {
       name: 'Мария Петрова', 
       email: 'maria@example.com', 
       role: 'user', 
-      joinDate: '2024-01-05',
+      joinDate: '2026-01-05',
+      createdAt: '2026-01-05T09:15:00Z',
+      isActive: true,
       title: 'Frontend Developer'
     },
     { 
@@ -150,7 +153,9 @@ export const summary = {
       name: 'Дмитрий Сидоров', 
       email: 'dmitry@example.com', 
       role: 'user', 
-      joinDate: '2024-01-10',
+      joinDate: '2026-01-10',
+      createdAt: '2026-01-10T14:20:00Z',
+      isActive: false,
       title: 'Backend Developer'
     },
     { 
@@ -158,7 +163,9 @@ export const summary = {
       name: 'Елена Васильева', 
       email: 'elena@example.com', 
       role: 'user', 
-      joinDate: '2024-01-12',
+      joinDate: '2026-01-12',
+      createdAt: '2026-01-12T11:45:00Z',
+      isActive: true,
       title: 'UI/UX Designer'
     },
   ],
@@ -174,20 +181,10 @@ export const summary = {
   ]
 };
 
-// Данные для компонента Chart (используются в Dashboard.jsx)
 export const chartData = [
-  {
-    name: "High",
-    total: 14,
-  },
-  {
-    name: "Medium",
-    total: 10,
-  },
-  {
-    name: "Low",
-    total: 13,
-  },
+  { name: "High", total: 14 },
+  { name: "Medium", total: 10 },
+  { name: "Low", total: 13 },
 ];
 
 export default summary;
