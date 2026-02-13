@@ -7,7 +7,10 @@ import { useParams } from 'react-router-dom';
 import  Button  from '../components/Button';
 import { IoMdAdd } from 'react-icons/io';
 import Tabs from '../components/tabs';
+import TaskTitle from '../components/TaskTitle';
+// import BoardView from '../components/BoardView';
 
+// import { tasks } from "../assets/data"
 
 const TABS = [
   { title: "Board View", icon: <MdGridView /> },
@@ -56,18 +59,15 @@ const Tasks = () => {
 
   <Tabs tabs={TABS} selected={selected} setSelected={setSelected}>
 
-          {/* {!status && (
+          {!status && (
             <div className='w-full flex justify-between gap-4 md:gap-x-12 py-4'>
               <TaskTitle label='To Do' className={TASK_TYPE.todo} />
-              <TaskTitle
-                label='In Progress'
-                className={TASK_TYPE["in progress"]}
-              />
+              <TaskTitle label='In Progress' className={TASK_TYPE["in progress"]}/>
               <TaskTitle label='Completed' className={TASK_TYPE.completed} />
             </div>
           )}
 
-          {selected === 0 ? (
+          {/* {selected === 0 ? (
             <BoardView tasks={data?.tasks} />
           ) : (
             <Table tasks={data?.tasks} />
