@@ -38,6 +38,7 @@ const TaskCard = ({ task }) => {
   const activities = task?.activities?.length ?? 0;
   const assets = task?.assets?.length ?? 0;
   const subTasks = task?.subTasks?.length ?? 0;
+  console.log("TaskCard рендерится для задачи:", task?.title);
 
   return (
     <div className='w-full h-fit bg-white dark:bg-[#1f1f1f] shadow-md p-4 rounded'>

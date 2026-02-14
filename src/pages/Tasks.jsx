@@ -3,15 +3,13 @@ import Loading from '../components/Loader';
 import React, { useState } from 'react';
 import { FaList } from 'react-icons/fa';
 import { MdGridView } from 'react-icons/md';
-import { useParams } from 'react-router-dom'; // используем useParams
+import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import { IoMdAdd } from 'react-icons/io';
 import Tabs from '../components/tabs';
 import TaskTitle from '../components/TaskTitle';
 import BoardView from '../components/BoardView';
 import summary from "../assets/data";
-
-
 
 const TABS = [
   { title: "Board View", icon: <MdGridView /> },
@@ -25,13 +23,12 @@ const TASK_TYPE = {
 };
 
 const Tasks = () => {
-  const { status } = useParams(); // получаем статус из URL (если есть)
-
+  const { status } = useParams();
   const [selected, setSelected] = useState(0);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Преобразуем статус из URL в формат данных (заменяем дефис на пробел для "in-progress")
+  // Преобразуем статус из URL в формат данных
   const stageFilter = status
     ? status === 'in-progress'
       ? 'in progress'
@@ -44,11 +41,10 @@ const Tasks = () => {
     : summary?.last10Tasks;
 
   return loading ? (
-    <div className='py-10'>
-      <Loading />
-    </div>
+    <div className='py-10'><Loading /></div>
   ) : (
     <div className='w-full'>
+      {/* Заголовок и кнопка создания задачи */}
       <div className='flex items-center justify-between mb-4'>
         <Title title={status ? `${status} Tasks` : "Tasks"} />
         {!status && (
@@ -61,26 +57,26 @@ const Tasks = () => {
         )}
       </div>
 
-      <div>
-        <Tabs tabs={TABS} selected={selected} setSelected={setSelected}>
-          {!status && (
-            <div className='w-full flex justify-between gap-4 md:gap-x-12 py-4'>
-              <TaskTitle label='To Do' className={TASK_TYPE.todo} />
-              <TaskTitle label='In Progress' className={TASK_TYPE["in progress"]} />
-              <TaskTitle label='Completed' className={TASK_TYPE.completed} />
-            </div>
-          )}
+      {/* Вкладки (без children — только переключение) */}
+      <Tabs tabs={TABS} selected={selected} setSelected={setSelected} />
 
-          {selected === 0 ? (
-            <BoardView tasks={filteredTasks} />
-          ) : (
-            <div>List View (не реализовано)</div> // позже замените на Table
-          )}
-        </Tabs>
-      </div>
+      {/* Блоки со статусами задач (только если нет статуса в URL) */}
+      {!status && (
+        <div className='w-full flex justify-between gap-4 md:gap-x-12 py-4'>
+          <TaskTitle label='To Do' className={TASK_TYPE.todo} />
+          <TaskTitle label='In Progress' className={TASK_TYPE["in progress"]} />
+          <TaskTitle label='Completed' className={TASK_TYPE.completed} />
+        </div>
+      )}
+
+      {/* Контент в зависимости от выбранной вкладки */}
+      {selected === 0 ? (
+        <BoardView tasks={filteredTasks} />
+      ) : (
+        <div>List View (не реализовано)</div>
+      )}
     </div>
   );
 };
-
 
 export default Tasks;
