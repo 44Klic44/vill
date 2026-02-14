@@ -43,7 +43,10 @@ export const summary = {
       stage: 'todo', 
       review: 'Duplicate',
       date: '2026-01-15',
-      team: ['CA', 'JS', 'AJ']
+      team: ['CA', 'JS', 'AJ'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 2, 
@@ -52,7 +55,10 @@ export const summary = {
       stage: 'in progress',
       review: 'Duplicate',
       date: '2026-01-10',
-      team: ['AJ', 'EW']
+      team: ['AJ', 'EW'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 3, 
@@ -61,7 +67,10 @@ export const summary = {
       stage: 'todo',
       review: 'Duplicate',
       date: '2026-01-05',
-      team: ['AJ', 'EW']
+      team: ['AJ', 'EW'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 4, 
@@ -70,7 +79,10 @@ export const summary = {
       stage: 'completed',
       review: 'Duplicate',
       date: '2026-01-18',
-      team: ['AJ', 'EW']
+      team: ['AJ', 'EW'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 5, 
@@ -79,7 +91,10 @@ export const summary = {
       stage: 'in progress',
       review: 'Duplicate',
       date: '2026-01-20',
-      team: ['CA', 'JD', 'JS']
+      team: ['CA', 'JD', 'JS'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 6, 
@@ -88,7 +103,10 @@ export const summary = {
       stage: 'todo',
       review: 'Duplicate',
       date: '2026-01-14',
-      team: ['AJ', 'EW']
+      team: ['AJ', 'EW'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 7, 
@@ -97,7 +115,10 @@ export const summary = {
       stage: 'completed',
       review: 'Duplicate',
       date: '2026-01-03',
-      team: ['CA', 'JD', 'JS']
+      team: ['CA', 'JD', 'JS'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 8, 
@@ -106,7 +127,10 @@ export const summary = {
       stage: 'in progress',
       review: 'Duplicate',
       date: '2026-01-22',
-      team: ['AJ', 'EW']
+      team: ['AJ', 'EW'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 9, 
@@ -115,7 +139,10 @@ export const summary = {
       stage: 'todo',
       review: 'Duplicate',
       date: '2026-01-17',
-      team: ['CA', 'JD', 'JS']
+      team: ['CA', 'JD', 'JS'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
     { 
       _id: 10, 
@@ -124,7 +151,10 @@ export const summary = {
       stage: 'in progress',
       review: 'Duplicate',
       date: '2026-01-25',
-      team: ['EW', 'AJ']
+      team: ['EW', 'AJ'],
+        activities: 0,    // добавлено
+    assets: 2,        // добавлено
+    subTasks: 1       // добавлено
     },
   ],
   users: [

@@ -1,16 +1,17 @@
 import Title from '../components/Title';
 import Loading from '../components/Loader';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { FaList } from 'react-icons/fa';
 import { MdGridView } from 'react-icons/md';
-import { useParams } from 'react-router-dom';
-import  Button  from '../components/Button';
+import { useParams } from 'react-router-dom'; // используем useParams
+import Button from '../components/Button';
 import { IoMdAdd } from 'react-icons/io';
 import Tabs from '../components/tabs';
 import TaskTitle from '../components/TaskTitle';
-// import BoardView from '../components/BoardView';
+import BoardView from '../components/BoardView';
+import summary from "../assets/data";
 
-// import { tasks } from "../assets/data"
+
 
 const TABS = [
   { title: "Board View", icon: <MdGridView /> },
@@ -24,27 +25,33 @@ const TASK_TYPE = {
 };
 
 const Tasks = () => {
-  const params = useParams();
+  const { status } = useParams(); // получаем статус из URL (если есть)
 
   const [selected, setSelected] = useState(0);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const status = params?.status || "";
+  // Преобразуем статус из URL в формат данных (заменяем дефис на пробел для "in-progress")
+  const stageFilter = status
+    ? status === 'in-progress'
+      ? 'in progress'
+      : status
+    : null;
 
-
-
+  // Фильтруем задачи по статусу, если он указан
+  const filteredTasks = stageFilter
+    ? summary?.last10Tasks?.filter(task => task.stage === stageFilter)
+    : summary?.last10Tasks;
 
   return loading ? (
     <div className='py-10'>
       <Loading />
-    </div> 
-    ) : (
-      <div className='w-full'> 
-            <div className='flex items-center justify-between mb-4'>
-        <Title   title={status ? `${status} Tasks` : "Tasks"} />
-
-      {!status && (
+    </div>
+  ) : (
+    <div className='w-full'>
+      <div className='flex items-center justify-between mb-4'>
+        <Title title={status ? `${status} Tasks` : "Tasks"} />
+        {!status && (
           <Button
             onClick={() => setOpen(true)}
             label='Create Task'
@@ -52,31 +59,28 @@ const Tasks = () => {
             className='flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md py-2 2xl:py-2.5'
           />
         )}
-      
       </div>
 
-     <div>
-
-  <Tabs tabs={TABS} selected={selected} setSelected={setSelected}>
-
+      <div>
+        <Tabs tabs={TABS} selected={selected} setSelected={setSelected}>
           {!status && (
             <div className='w-full flex justify-between gap-4 md:gap-x-12 py-4'>
               <TaskTitle label='To Do' className={TASK_TYPE.todo} />
-              <TaskTitle label='In Progress' className={TASK_TYPE["in progress"]}/>
+              <TaskTitle label='In Progress' className={TASK_TYPE["in progress"]} />
               <TaskTitle label='Completed' className={TASK_TYPE.completed} />
             </div>
           )}
 
-          {/* {selected === 0 ? (
-            <BoardView tasks={data?.tasks} />
+          {selected === 0 ? (
+            <BoardView tasks={filteredTasks} />
           ) : (
-            <Table tasks={data?.tasks} />
-          )} */}
+            <div>List View (не реализовано)</div> // позже замените на Table
+          )}
         </Tabs>
-
-         </div>
       </div>
-    );
+    </div>
+  );
 };
 
-export default Tasks
+
+export default Tasks;
