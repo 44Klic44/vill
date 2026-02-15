@@ -42,8 +42,8 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-15",
       team: ["CA", "JS", "AJ"],
-      activities: 0,
-      assets: 2,
+      activities: [], // теперь массив
+      assets: [],     // теперь массив
       subTasks: [
         {
           title: "Write unit tests",
@@ -60,8 +60,12 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-10",
       team: ["AJ", "EW"],
-      activities: 0,
-      assets: 2,
+      activities: [
+        { text: "Please review this PR", user: "AJ", date: "2026-01-11" }
+      ],
+      assets: [
+        { name: "code_review.pdf", url: "#" }
+      ],
       subTasks: [
         {
           title: "Review pull request",
@@ -78,8 +82,8 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-05",
       team: ["AJ", "EW"],
-      activities: 0,
-      assets: 2,
+      activities: [],
+      assets: [],
       subTasks: [
         {
           title: "Review proposal document",
@@ -96,8 +100,14 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-18",
       team: ["AJ", "EW"],
-      activities: 0,
-      assets: 2,
+      activities: [
+        { text: "Great video!", user: "EW", date: "2026-01-19" },
+        { text: "Needs more examples", user: "AJ", date: "2026-01-20" }
+      ],
+      assets: [
+        { name: "thumbnail.png", url: "#" },
+        { name: "script.docx", url: "#" }
+      ],
       subTasks: [
         {
           title: "Blog App Admin Dashboard",
@@ -114,8 +124,13 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-20",
       team: ["CA", "JD", "JS"],
-      activities: 0,
-      assets: 2,
+      activities: [
+        { text: "Found the issue", user: "CA", date: "2026-01-21" }
+      ],
+      assets: [
+        { name: "error_log.txt", url: "#" },
+        { name: "fix.patch", url: "#" }
+      ],
       subTasks: [
         {
           title: "Check Login code and fix bugs asap",
@@ -132,8 +147,8 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-14",
       team: ["AJ", "EW"],
-      activities: 0,
-      assets: 2,
+      activities: [],
+      assets: [],
       subTasks: [
         {
           title: "Update proposal changes",
@@ -150,8 +165,10 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-03",
       team: ["CA", "JD", "JS"],
-      activities: 0,
-      assets: 2,
+      activities: [
+        { text: "Approved", user: "JD", date: "2026-01-04" }
+      ],
+      assets: [],
       subTasks: [
         {
           title: "Normal proposal review",
@@ -168,8 +185,10 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-22",
       team: ["AJ", "EW"],
-      activities: 0,
-      assets: 2,
+      activities: [],
+      assets: [
+        { name: "diff.txt", url: "#" }
+      ],
       subTasks: [
         {
           title: "Approve code changes",
@@ -186,8 +205,8 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-17",
       team: ["CA", "JD", "JS"],
-      activities: 0,
-      assets: 2,
+      activities: [],
+      assets: [],
       subTasks: [
         {
           title: "Draft proposal",
@@ -204,8 +223,13 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-25",
       team: ["EW", "AJ"],
-      activities: 0,
-      assets: 2,
+      activities: [
+        { text: "Let's use Tailwind", user: "EW", date: "2026-01-26" }
+      ],
+      assets: [
+        { name: "design_tokens.json", url: "#" },
+        { name: "components.png", url: "#" }
+      ],
       subTasks: [
         {
           title: "Create design tokens",
