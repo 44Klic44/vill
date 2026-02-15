@@ -10,6 +10,7 @@ import Tabs from '../components/tabs';
 import TaskTitle from '../components/TaskTitle';
 import BoardView from '../components/BoardView';
 import summary from "../assets/data";
+import Table from '../components/task/Table';
 
 const TABS = [
   { title: "Board View", icon: <MdGridView /> },
@@ -70,11 +71,11 @@ const Tasks = () => {
       )}
 
       {/* Контент в зависимости от выбранной вкладки */}
-      {selected === 0 ? (
-        <BoardView tasks={filteredTasks} />
-      ) : (
-        <div>List View (не реализовано)</div>
-      )}
+    {selected === 0 ? (
+  <BoardView tasks={filteredTasks} />
+) : (
+  <div><Table tasks={filteredTasks} /></div>   // ← было tasks, стало filteredTasks
+)}
     </div>
   );
 };
