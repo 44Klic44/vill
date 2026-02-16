@@ -42,8 +42,8 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-15",
       team: ["CA", "JS", "AJ"],
-      activities: [], // теперь массив
-      assets: [],     // теперь массив
+      activities: [],
+      assets: [{name: "code_review.pdf", url: "https://images.pexels.com/photos/2418664/pexels-photo-2418664.jpeg"}], // без ассетов
       subTasks: [
         {
           title: "Write unit tests",
@@ -64,7 +64,7 @@ export const summary = {
         { text: "Please review this PR", user: "AJ", date: "2026-01-11" }
       ],
       assets: [
-        { name: "code_review.pdf", url: "#" }
+        { name: "code_review.pdf", url: "https://images.pexels.com/photos/2418664/pexels-photo-2418664.jpeg" }
       ],
       subTasks: [
         {
@@ -105,8 +105,8 @@ export const summary = {
         { text: "Needs more examples", user: "AJ", date: "2026-01-20" }
       ],
       assets: [
-        { name: "thumbnail.png", url: "#" },
-        { name: "script.docx", url: "#" }
+        { name: "thumbnail.png", url: "https://images.pexels.com/photos/8797307/pexels-photo-8797307.jpeg" },
+        { name: "script.docx", url: "https://images.pexels.com/photos/2534523/pexels-photo-2534523.jpeg" }
       ],
       subTasks: [
         {
@@ -128,8 +128,8 @@ export const summary = {
         { text: "Found the issue", user: "CA", date: "2026-01-21" }
       ],
       assets: [
-        { name: "error_log.txt", url: "#" },
-        { name: "fix.patch", url: "#" }
+        { name: "error_log.txt", url: "https://images.pexels.com/photos/804049/pexels-photo-804049.jpeg" },
+        { name: "fix.patch", url: "https://images.pexels.com/photos/2418664/pexels-photo-2418664.jpeg" }
       ],
       subTasks: [
         {
@@ -187,7 +187,7 @@ export const summary = {
       team: ["AJ", "EW"],
       activities: [],
       assets: [
-        { name: "diff.txt", url: "#" }
+        { name: "diff.txt", url: "https://images.pexels.com/photos/8797307/pexels-photo-8797307.jpeg" }
       ],
       subTasks: [
         {
@@ -227,8 +227,8 @@ export const summary = {
         { text: "Let's use Tailwind", user: "EW", date: "2026-01-26" }
       ],
       assets: [
-        { name: "design_tokens.json", url: "#" },
-        { name: "components.png", url: "#" }
+        { name: "design_tokens.json", url: "https://images.pexels.com/photos/2534523/pexels-photo-2534523.jpeg" },
+        { name: "components.png", url: "https://images.pexels.com/photos/804049/pexels-photo-804049.jpeg" }
       ],
       subTasks: [
         {
