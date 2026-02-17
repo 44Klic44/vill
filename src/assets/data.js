@@ -42,8 +42,23 @@ export const summary = {
       review: "Duplicate",
       date: "2026-01-15",
       team: ["CA", "JS", "AJ"],
-      activities: [],
-      assets: [{name: "code_review.pdf", url: "https://images.pexels.com/photos/2418664/pexels-photo-2418664.jpeg"}], // без ассетов
+      activities: [
+        {
+          text: "Task started",
+          user: "CA",
+          date: "2026-01-15T10:00:00Z",
+          type: "started"
+        },
+        {
+          text: "First comment",
+          user: "JS",
+          date: "2026-01-16T14:30:00Z",
+          type: "commented"
+        }
+      ],
+      assets: [
+        { name: "code_review.pdf", url: "https://images.pexels.com/photos/2418664/pexels-photo-2418664.jpeg" }
+      ],
       subTasks: [
         {
           title: "Write unit tests",
@@ -61,7 +76,12 @@ export const summary = {
       date: "2026-01-10",
       team: ["AJ", "EW"],
       activities: [
-        { text: "Please review this PR", user: "AJ", date: "2026-01-11" }
+        { 
+          text: "Please review this PR", 
+          user: "AJ", 
+          date: "2026-01-11T09:15:00Z",
+          type: "assigned"
+        }
       ],
       assets: [
         { name: "code_review.pdf", url: "https://images.pexels.com/photos/2418664/pexels-photo-2418664.jpeg" }
@@ -101,8 +121,24 @@ export const summary = {
       date: "2026-01-18",
       team: ["AJ", "EW"],
       activities: [
-        { text: "Great video!", user: "EW", date: "2026-01-19" },
-        { text: "Needs more examples", user: "AJ", date: "2026-01-20" }
+        { 
+          text: "Great video!", 
+          user: "EW", 
+          date: "2026-01-19T16:20:00Z",
+          type: "commented"
+        },
+        { 
+          text: "Needs more examples", 
+          user: "AJ", 
+          date: "2026-01-20T10:05:00Z",
+          type: "commented"
+        },
+        {
+          text: "Project completed!!",
+          user: "AJ",
+          date: "2026-01-21T11:30:00Z",
+          type: "completed"
+        }
       ],
       assets: [
         { name: "thumbnail.png", url: "https://images.pexels.com/photos/8797307/pexels-photo-8797307.jpeg" },
@@ -125,7 +161,12 @@ export const summary = {
       date: "2026-01-20",
       team: ["CA", "JD", "JS"],
       activities: [
-        { text: "Found the issue", user: "CA", date: "2026-01-21" }
+        { 
+          text: "Found the issue", 
+          user: "CA", 
+          date: "2026-01-21T13:45:00Z",
+          type: "bug"
+        }
       ],
       assets: [
         { name: "error_log.txt", url: "https://images.pexels.com/photos/804049/pexels-photo-804049.jpeg" },
@@ -166,7 +207,12 @@ export const summary = {
       date: "2026-01-03",
       team: ["CA", "JD", "JS"],
       activities: [
-        { text: "Approved", user: "JD", date: "2026-01-04" }
+        { 
+          text: "Approved", 
+          user: "JD", 
+          date: "2026-01-04T09:00:00Z",
+          type: "completed"
+        }
       ],
       assets: [],
       subTasks: [
@@ -224,7 +270,12 @@ export const summary = {
       date: "2026-01-25",
       team: ["EW", "AJ"],
       activities: [
-        { text: "Let's use Tailwind", user: "EW", date: "2026-01-26" }
+        { 
+          text: "Let's use Tailwind", 
+          user: "EW", 
+          date: "2026-01-26T15:30:00Z",
+          type: "commented"
+        }
       ],
       assets: [
         { name: "design_tokens.json", url: "https://images.pexels.com/photos/2534523/pexels-photo-2534523.jpeg" },
