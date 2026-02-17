@@ -224,7 +224,7 @@ const Activities = ({ activity }) => {
     // Здесь будет отправка
   };
 
-  const Card = ({ item }) => {
+  const Card = ({ item, isLast }) => {
     console.log('🎴 Rendering card for activity:', item);
     const userName = teamMembers[item?.user]?.name || item?.user || "Unknown";
     const type = item?.type?.toLowerCase() || "commented";
@@ -235,9 +235,10 @@ const Activities = ({ activity }) => {
           <div className='w-10 h-10 flex items-center justify-center'>
             {TASKTYPEICON[type] || TASKTYPEICON.commented}
           </div>
-          <div className='w-full flex items-center'>
-            <div className='w-0.5 bg-gray-300 h-full'></div>
-          </div>
+          {/* Показываем линию только если это не последняя активность */}
+          {!isLast && (
+            <div className='w-0.5 bg-gray-300 flex-1 my-1'></div>
+          )}
         </div>
 
         <div className='flex flex-col gap-y-1 mb-8'>
@@ -265,7 +266,9 @@ const Activities = ({ activity }) => {
         <h4 className='text-gray-600 font-semibold text-lg mb-5'>Activities</h4>
         <div className='w-full'>
           {activity?.length > 0 ? (
-            activity.map((el, index) => <Card key={index} item={el} />)
+            activity.map((el, index) => (
+              <Card key={index} item={el} isLast={index === activity.length - 1} />
+            ))
           ) : (
             <p className='text-gray-500'>No activities yet</p>
           )}
