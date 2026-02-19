@@ -4,9 +4,11 @@ import { IoMdAdd } from "react-icons/io";
 import { toast } from "sonner";
 
 // Импорты из проекта
-import summary from "../assets/data"; 
+import summary from "../assets/data";
 import Button from "../components/Button";
 import Title from "../components/Title";
+import AddUser from "../components/AddUser";
+import Dialogs, { UserAction } from "../components/task/Dialogs"; // импорт диалогов
 
 // Вспомогательная функция для получения инициалов
 const getInitials = (name) => {
@@ -24,6 +26,68 @@ const Users = () => {
   const [open, setOpen] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [selected, setSelected] = useState(null);
+
+  // Заглушки для API (замените на реальные мутации, когда они появятся)
+  const deleteUser = async (id) => {
+    console.log("Deleting user:", id);
+    return { data: { message: "User deleted (demo)" } };
+  };
+  const userAction = async ({ isActive, id }) => {
+    console.log("Changing user status:", id, isActive);
+    return { data: { message: "User status updated (demo)" } };
+  };
+  const refetch = () => {
+    // заглушка для обновления списка
+    console.log("Refetch users");
+  };
+
+  const deleteClick = (id) => {
+    setSelected(id);
+    setOpenDialog(true);
+  };
+
+  const editClick = (el) => {
+    setSelected(el);
+    setOpen(true);
+  };
+
+  const userStatusClick = (el) => {
+    setSelected(el);
+    setOpenAction(true);
+  };
+
+  const userActionHandler = async () => {
+    try {
+      const res = await userAction({
+        isActive: !selected?.isActive,
+        id: selected?._id,
+      });
+      refetch();
+      toast.success(res?.data?.message);
+      setSelected(null);
+      setTimeout(() => {
+        setOpenAction(false);
+      }, 500);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const deleteHandler = async () => {
+    try {
+      const res = await deleteUser(selected);
+      refetch();
+      toast.success(res?.data?.message);
+      setSelected(null);
+      setTimeout(() => {
+        setOpenDialog(false);
+      }, 500);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
   const TableHeader = () => (
     <thead className='border-b border-gray-300 dark:border-gray-600'>
@@ -55,6 +119,7 @@ const Users = () => {
       <td className='p-2'>{user.role}</td>
       <td>
         <button
+          onClick={() => userStatusClick(user)}
           className={clsx(
             "w-fit px-4 py-1 rounded-full",
             user?.isActive ? "bg-blue-200" : "bg-yellow-100"
@@ -68,42 +133,65 @@ const Users = () => {
           className='text-blue-600 hover:text-blue-500 font-semibold sm:px-0'
           label='Edit'
           type='button'
-          // onClick={() => editClick(user)}
+          onClick={() => editClick(user)}
         />
         <Button
           className='text-red-700 hover:text-red-500 font-semibold sm:px-0'
           label='Delete'
           type='button'
-          // onClick={() => deleteClick(user?._id)}
+          onClick={() => deleteClick(user?._id)}
         />
       </td>
     </tr>
   );
 
   return (
-    <div className='w-full md:px-1 px-0 mb-6'>
-      <div className='flex items-center justify-between mb-8'>
-        <Title title='Team Members' />
-        <Button
-          label='Add New User'
-          icon={<IoMdAdd className='text-lg' />}
-          className='flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5'
-          onClick={() => setOpen(true)}
-        />
-      </div>
-      <div className='bg-white dark:bg-[#1f1f1f] px-2 md:px-4 py-4 shadow rounded'>
-        <div className='overflow-x-auto'>
-          <table className='w-full mb-5'>
-            <TableHeader />
-            <tbody>
-              {summary.users?.map((user, index) => (
-                <TableRow key={user._id || index} user={user} />
-              ))}
-            </tbody>
-          </table>
+    <>
+      <div className='w-full md:px-1 px-0 mb-6'>
+        <div className='flex items-center justify-between mb-8'>
+          <Title title='Team Members' />
+          <Button
+            label='Add New User'
+            icon={<IoMdAdd className='text-lg' />}
+            className='flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5'
+            onClick={() => setOpen(true)}
+          />
+        </div>
+        <div className='bg-white dark:bg-[#1f1f1f] px-2 md:px-4 py-4 shadow rounded'>
+          <div className='overflow-x-auto'>
+            <table className='w-full mb-5'>
+              <TableHeader />
+              <tbody>
+                {summary.users?.map((user, index) => (
+                  <TableRow key={user._id || index} user={user} />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
+
+      <AddUser
+        open={open}
+        setOpen={setOpen}
+        userData={selected}
+        key={new Date().getTime().toString()}
+      />
+
+      <Dialogs
+        open={openDialog}
+        setOpen={setOpenDialog}
+        onClick={deleteHandler}
+        type="delete"
+        msg="Are you sure you want to delete this user?"
+      />
+
+      <UserAction
+        open={openAction}
+        setOpen={setOpenAction}
+        onClick={userActionHandler}
+      />
+    </>
   );
 };
 
