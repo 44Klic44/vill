@@ -13,23 +13,7 @@ import AddSubTask from "./AddSubTask";
 import AddTask from "./AddTask";
 import TaskColor from "./TaskColor";
 import { useSelector } from "react-redux";
-import Dialogs from "./Dialogs";
-
-// Временная заглушка для ConfirmationDialog, если его нет
-const ConfirmatioDialog = ({ open, setOpen, onClick }) => {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white p-6 rounded shadow-lg">
-        <p className="mb-4">Are you sure you want to delete this task?</p>
-        <div className="flex justify-end gap-2">
-          <button onClick={() => setOpen(false)} className="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
-          <button onClick={onClick} className="px-4 py-2 bg-red-600 text-white rounded">Delete</button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import Dialogs from "./Dialogs"; // правильный локальный импорт
 
 const CustomTransition = ({ children }) => (
   <Transition
@@ -45,7 +29,6 @@ const CustomTransition = ({ children }) => (
   </Transition>
 );
 
-// Компонент смены статуса (пока не реализован, но оставим)
 const ChangeTaskActions = ({ _id, stage }) => {
   const items = [
     { label: "To-Do", stage: "todo", icon: <TaskColor className='bg-blue-600' />, onClick: () => toast.info("Change stage not implemented") },
@@ -192,11 +175,12 @@ export default function TaskDialog({ task }) {
       />
       <AddSubTask open={open} setOpen={setOpen} id={task._id} />
 
-      
-      <ConfirmatioDialog
+      <Dialogs
         open={openDialog}
         setOpen={setOpenDialog}
         onClick={deleteHandler}
+        type="delete"
+        msg="Are you sure you want to delete this task?"
       />
     </>
   );
