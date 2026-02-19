@@ -13,7 +13,7 @@ import {
   TASK_TYPE,
   formatDate,
 } from "../utils/index";
-import TaskDialog from "./task/TaskDialog";
+import TaskDialog from "./task/TaskDialog"; // импорт восстановлен
 import { BiMessageAltDetail } from "react-icons/bi";
 import { FaList } from "react-icons/fa";
 import UserInfo from "./UserInfo";
@@ -43,7 +43,7 @@ const TaskCard = ({ task }) => {
 
   return (
     <div className="w-full h-fit bg-white dark:bg-[#1f1f1f] shadow-md p-4 rounded">
-      {/* Верхняя часть: приоритет + кнопка */}
+      {/* Верхняя часть: приоритет + меню (всегда показываем для теста) */}
       <div className="w-full flex justify-between">
         <div
           className={clsx(
@@ -54,7 +54,8 @@ const TaskCard = ({ task }) => {
           <span className="text-lg">{ICONS[task?.priority]}</span>
           <span className="uppercase">{task?.priority} Priority</span>
         </div>
-        {user?.isAdmin && <TaskDialog task={task} />}
+        {/* Убрана проверка isAdmin – меню видно всем */}
+        <TaskDialog task={task} />
       </div>
 
       {/* Заголовок и индикатор стадии */}
@@ -138,7 +139,6 @@ const TaskCard = ({ task }) => {
       {/* Кнопка добавления подзадачи */}
       <div className="w-full pb-2">
         <button
-          // disabled={!user?.isAdmin}
           onClick={() => setOpen(true)}
           className="w-full flex gap-4 items-center text-sm text-gray-500 font-semibold disabled:cursor-not-allowed disabled:text-gray-300"
         >
@@ -147,7 +147,7 @@ const TaskCard = ({ task }) => {
         </button>
       </div>
 
-      {/* Компонент добавления подзадачи (пока закомментирован) */}
+      {/* Компонент добавления подзадачи */}
       <AddSubTask open={open} setOpen={setOpen} id={task._id} />
     </div>
   );
