@@ -19,6 +19,7 @@ import { FaList } from "react-icons/fa";
 import UserInfo from "./UserInfo";
 import { teamMembers } from "../assets/data";
 import { IoMdAdd } from "react-icons/io";
+import AddSubTask from "./task/AddSubTask";
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -137,7 +138,7 @@ const TaskCard = ({ task }) => {
       {/* Кнопка добавления подзадачи */}
       <div className="w-full pb-2">
         <button
-          disabled={!user?.isAdmin}
+          // disabled={!user?.isAdmin}
           onClick={() => setOpen(true)}
           className="w-full flex gap-4 items-center text-sm text-gray-500 font-semibold disabled:cursor-not-allowed disabled:text-gray-300"
         >
@@ -147,7 +148,7 @@ const TaskCard = ({ task }) => {
       </div>
 
       {/* Компонент добавления подзадачи (пока закомментирован) */}
-      {/* <AddSubTask open={open} setOpen={setOpen} id={task._id} /> */}
+      <AddSubTask open={open} setOpen={setOpen} id={task._id} />
     </div>
   );
 };
