@@ -11,7 +11,7 @@ import {
 } from "react-icons/md";
 import { toast } from "sonner";
 
-// Импорты из вашего проекта
+// Импорты из проекта
 import {
   BGS,
   PRIOTITYSTYELS,
@@ -22,8 +22,10 @@ import UserInfo from "../UserInfo";
 import Button from "../Button";
 import TaskColor from "./TaskColor";
 import { teamMembers } from "../../assets/data";
+import Dialogs from "./Dialogs";      // реальный компонент подтверждения
+import AddTask from "./AddTask";       // реальный компонент добавления/редактирования
 
-// Временные компоненты (пока не созданы отдельные файлы)
+// Временный компонент для отображения активов (можно оставить или вынести)
 const TaskAssets = ({ activities, subTasks, assets }) => (
   <div className="flex items-center gap-2 text-sm text-gray-600">
     <div className="flex items-center gap-1">
@@ -41,33 +43,6 @@ const TaskAssets = ({ activities, subTasks, assets }) => (
   </div>
 );
 
-const ConfirmatioDialog = ({ open, setOpen, onClick }) => {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white p-6 rounded shadow-lg">
-        <p className="mb-4">Are you sure you want to delete this task?</p>
-        <div className="flex justify-end gap-2">
-          <Button onClick={() => setOpen(false)} label="Cancel" />
-          <Button onClick={onClick} label="Delete" className="bg-red-600 text-white" />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const AddTask = ({ open, setOpen, task }) => {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white p-6 rounded shadow-lg">
-        <p>Add/Edit Task (not implemented yet)</p>
-        <Button onClick={() => setOpen(false)} label="Close" />
-      </div>
-    </div>
-  );
-};
-
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
   medium: <MdKeyboardArrowUp />,
@@ -79,7 +54,6 @@ const Table = ({ tasks }) => {
   const [selected, setSelected] = useState(null);
   const [openEdit, setOpenEdit] = useState(false);
 
-  // Заглушка для удаления (замените на реальную мутацию, когда появится)
   const deleteClicks = (id) => {
     setSelected(id);
     setOpenDialog(true);
@@ -92,11 +66,9 @@ const Table = ({ tasks }) => {
 
   const deleteHandler = async () => {
     try {
-      // Здесь будет вызов API
       toast.success("Task deleted successfully (demo)");
       setTimeout(() => {
         setOpenDialog(false);
-        // window.location.reload(); // если нужно обновить список
       }, 500);
     } catch (err) {
       console.log(err);
@@ -118,7 +90,6 @@ const Table = ({ tasks }) => {
   );
 
   const TableRow = ({ task }) => {
-    // Преобразуем team (строки) в объекты для UserInfo
     const teamMembersData = task?.team?.map(id => teamMembers[id] || {
       name: id,
       title: "",
@@ -187,7 +158,6 @@ const Table = ({ tasks }) => {
             type='button'
             onClick={() => editClickHandler(task)}
           />
-
           <Button
             className='text-red-700 hover:text-red-500 sm:px-0 text-sm md:text-base'
             label='Delete'
@@ -214,10 +184,12 @@ const Table = ({ tasks }) => {
         </div>
       </div>
 
-      <ConfirmatioDialog
+      <Dialogs
         open={openDialog}
         setOpen={setOpenDialog}
         onClick={deleteHandler}
+        type="delete"
+        msg="Are you sure you want to delete this task?"
       />
 
       <AddTask
