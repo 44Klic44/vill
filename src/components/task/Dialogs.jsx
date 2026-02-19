@@ -14,10 +14,10 @@ export default function Dialogs({
   setType = () => {},
 }) {
   const closeDialog = () => {
-    setType("delete");
-    setMsg(null);
     setOpen(false);
   };
+
+  const isRestore = type === "restore" || type === "restoreAll";
 
   return (
     <ModalWrapper open={open} setOpen={closeDialog}>
@@ -26,7 +26,7 @@ export default function Dialogs({
           <p
             className={clsx(
               "p-4 rounded-full",
-              type === "restore" || type === "restoreAll"
+              isRestore
                 ? "text-yellow-600 bg-yellow-100"
                 : "text-red-600 bg-red-200"
             )}
@@ -50,12 +50,12 @@ export default function Dialogs({
             type='button'
             className={clsx(
               "px-6 py-2 text-sm font-semibold text-white rounded",
-              type === "restore" || type === "restoreAll"
+              isRestore
                 ? "bg-yellow-600 hover:bg-yellow-700"
                 : "bg-red-600 hover:bg-red-700"
             )}
             onClick={onClick}
-            label={type === "restore" ? "Restore" : "Delete"}
+            label={isRestore ? "Restore" : "Delete"}
           />
         </div>
       </div>
