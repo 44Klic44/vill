@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Notice from "../models/notis.js";
-import User from "../models/user";
+import User from "../models/user.js";
 import createJWT from "../utils/index.js";
 
 // POST request - login user
