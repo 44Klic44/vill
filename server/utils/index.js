@@ -23,7 +23,7 @@ export const createJWT = (res, userId) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: false,                // обязательно false для localhost (HTTP)
-    sameSite: "lax",              // lax работает с localhost
+    sameSite: "none",             
     domain: "localhost",          // явно указываем домен
     path: "/",
     maxAge: 24 * 60 * 60 * 1000,  // 1 день

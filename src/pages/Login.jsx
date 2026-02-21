@@ -4,6 +4,14 @@ import { useNavigate } from 'react-router-dom'
 import Textbox from '../components/Textbox';
 import Button from '../components/Button';
 import { useSelector } from 'react-redux';
+import { useLoginMutation } from '../redux/slices/api/authApiSlice.js';
+
+
+
+
+
+
+
 const Login = () => {
   const {user} = useSelector((state) => state.auth)
 const {
@@ -13,8 +21,16 @@ const {
   } = useForm();
 
 const navigate = useNavigate();
+const [login, { isLoading }] = useLoginMutation();
 const submitHandler = async(data)=>{
-  console.log("submit")
+  try{
+    const result = await login(data)
+    console.log(result);
+  }
+  catch (error){
+console.log(error);
+toast.error(error?.data?.message || error.message)
+  }
 }
  console.log(user)
  

@@ -1,0 +1,37 @@
+import { USERS_URL } from "../../../utils/contants.js";
+import { apiSlice } from "../apiSlice";
+console.log('apiSlice:', apiSlice); // <-- добавьте эту строку
+
+
+export const authApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/login`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+    }),
+    register: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/register`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/logout`,
+        method: "POST",
+        credentials: "include",
+      }),
+    }),
+  }),
+});
+
+console.log('authApiSlice:', authApiSlice); // <-- и эту строку
+
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
+  authApiSlice;
