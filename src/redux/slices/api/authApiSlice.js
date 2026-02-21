@@ -1,6 +1,6 @@
 import { USERS_URL } from "../../../utils/contants.js";
 import { apiSlice } from "../apiSlice";
-console.log('apiSlice:', apiSlice); // <-- добавьте эту строку
+
 
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -31,7 +31,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-console.log('authApiSlice:', authApiSlice); // <-- и эту строку
+
 
 export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
   authApiSlice;

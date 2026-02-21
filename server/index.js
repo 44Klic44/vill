@@ -26,7 +26,8 @@ app.use(
     origin: [
       "https://mern-task-manager-app.netlify.app",
       "http://localhost:3000",
-      "http://localhost:3001"
+      "http://localhost:3001",
+      "http://localhost:5173"   
     ],
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
