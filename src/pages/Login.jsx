@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom'
 import Textbox from '../components/Textbox';
 import Button from '../components/Button';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useLoginMutation } from '../redux/slices/api/authApiSlice.js';
-
+import { setCredentials } from '../redux/slices/authSlice.js';
+import { toast } from 'sonner'; 
+import Loading from '../components/Loader';
 
 const Login = () => {
   const {user} = useSelector((state) => state.auth)
@@ -16,18 +18,21 @@ const {
   } = useForm();
 
 const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+
 const [login, { isLoading }] = useLoginMutation();
-const submitHandler = async(data)=>{
-  try{
-    const result = await login(data)
+const submitHandler = async (data) => {
+  try {
+    const result = await login(data).unwrap(); // ✅ добавляем unwrap
     console.log(result);
+    dispatch(setCredentials(result)); // ✅ было res, исправлено на result
+    navigate('/dashboard');
+  } catch (error) {
+    toast.error(error?.data?.message || error.message);
   }
-  catch (error){
-console.log(error);
-toast.error(error?.data?.message || error.message)
-  }
-}
- console.log(user)
+};
+
  
 useEffect(()=>{
 user && navigate("/dashboard")
@@ -111,15 +116,14 @@ user && navigate("/dashboard")
 
 
 
-            {/* {isLoading ? (
+            {isLoading ? (
               <Loading />
-            ) : ( */}
+            ) : (
               <Button
                 type='submit'
                 label='Log in'
                 className='w-full h-10 bg-blue-700 text-white rounded-full'
-              />
-            {/* )} */}
+              />)}
           </form>
         </div>
     </div>
