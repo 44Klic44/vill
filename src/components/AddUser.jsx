@@ -1,67 +1,37 @@
 import { Dialog } from "@headlessui/react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-// Правильные пути к компонентам (убедитесь, что они существуют)
 import Button from "./Button";
 import Loading from "./Loader";
 import ModalWrapper from "./ModalWrapper";
 import Textbox from "./Textbox";
-// Заглушки API (замените на реальные, когда появятся)
-const useRegisterMutation = () => {
-  const mutate = async (data) => {
-    console.log("Register user:", data);
-    return { unwrap: async () => ({ message: "User added (demo)" }) };
-  };
-  return [mutate, { isLoading: false }];
-};
-const useUpdateUserMutation = () => {
-  const mutate = async (data) => {
-    console.log("Update user:", data);
-    return { unwrap: async () => ({ message: "User updated (demo)", user: data }) };
-  };
-  return [mutate, { isLoading: false }];
-};
-import { setCredentials } from "../redux/slices/authSlice";
+import { useRegisterMutation } from "../redux/slices/api/authApiSlice";
 
-const AddUser = ({ open, setOpen, userData }) => {
-  const defaultValues = userData ?? {};
-  const { user } = useSelector((state) => state.auth);
-
+const AddUser = ({ open, setOpen }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues });
-
-  const dispatch = useDispatch();
+    reset,
+  } = useForm();
 
   const [addNewUser, { isLoading }] = useRegisterMutation();
-  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   const handleOnSubmit = async (data) => {
     try {
-      if (userData) {
-        const res = await updateUser(data).unwrap();
-        toast.success(res?.message);
-        if (userData?._id === user?._id) {
-          dispatch(setCredentials({ ...res?.user }));
-        }
-      } else {
-        const res = await addNewUser({
-          ...data,
-          password: data?.email,
-        }).unwrap();
-        toast.success("New User added successfully");
-      }
-
-      setTimeout(() => {
-        setOpen(false);
-      }, 1500);
+      // При создании пользователя передаём данные, включая пароль.
+      // Здесь пароль задаётся равным email (только для примера).
+      await addNewUser({
+        ...data,
+        password: data.email, // или другая логика генерации пароля
+      }).unwrap();
+      toast.success("New user added successfully");
+      reset(); // очищаем форму
+      setTimeout(() => setOpen(false), 1500);
     } catch (err) {
-      console.log(err);
-      toast.error(err?.data?.message || err.error);
+      console.error(err);
+      toast.error(err?.data?.message || err.error || "Something went wrong");
     }
   };
 
@@ -72,7 +42,7 @@ const AddUser = ({ open, setOpen, userData }) => {
           as='h2'
           className='text-base font-bold leading-6 text-gray-900 mb-4'
         >
-          {userData ? "UPDATE PROFILE" : "ADD NEW USER"}
+          ADD NEW USER
         </Dialog.Title>
         <div className='mt-2 flex flex-col gap-6'>
           <Textbox
@@ -108,7 +78,6 @@ const AddUser = ({ open, setOpen, userData }) => {
             })}
             error={errors.email ? errors.email.message : ""}
           />
-
           <Textbox
             placeholder='Role'
             type='text'
@@ -122,7 +91,7 @@ const AddUser = ({ open, setOpen, userData }) => {
           />
         </div>
 
-        {isLoading || isUpdating ? (
+        {isLoading ? (
           <div className='py-5'>
             <Loading />
           </div>
