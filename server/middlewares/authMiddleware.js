@@ -5,13 +5,20 @@ import User from "../models/user.js";
 const protectRoute = asyncHandler(async (req, res, next) => {
   let token = req.cookies.token;
 
+  // Если токена нет в куках, пробуем взять из заголовка Authorization
+  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
   if (token) {
     try {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      const resp = await User.findById(decodedToken.userId).select("isAdmin email");
 
-      const resp = await User.findById(decodedToken.userId).select(
-        "isAdmin email"
-      );
+      // Проверяем, существует ли пользователь
+      if (!resp) {
+        return res.status(401).json({ status: false, message: "User not found" });
+      }
 
       req.user = {
         email: resp.email,
@@ -22,14 +29,10 @@ const protectRoute = asyncHandler(async (req, res, next) => {
       next();
     } catch (error) {
       console.error(error);
-      return res
-        .status(401)
-        .json({ status: false, message: "Not authorized. Try login again." });
+      return res.status(401).json({ status: false, message: "Not authorized. Try login again." });
     }
   } else {
-    return res
-      .status(401)
-      .json({ status: false, message: "Not authorized. Try login again." });
+    return res.status(401).json({ status: false, message: "Not authorized. Try login again." });
   }
 });
 

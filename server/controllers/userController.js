@@ -1,21 +1,25 @@
 import asyncHandler from "express-async-handler";
 import Notice from "../models/notis.js";
 import User from "../models/user.js";
-import createJWT from "../utils/index.js";
+import { createJWT } from "../utils/index.js";
+import jwt from "jsonwebtoken";
+console.log('✅ userController.js загружен');
 
 // POST request - login user
 const loginUser = asyncHandler(async (req, res) => {
+   console.log('🔥🔥🔥 loginUserTest ВЫЗВАН');
   const { email, password } = req.body;
+  console.log(`🔐 Попытка входа для email: ${email}`); // Лог 1
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res
-      .status(401)
-      .json({ status: false, message: "Invalid email or password." });
+    console.log(`❌ Пользователь не найден: ${email}`); // Лог 2
+    return res.status(401).json({ status: false, message: "Invalid email or password." });
   }
 
   if (!user?.isActive) {
+    console.log(`⛔ Учётная запись неактивна: ${email}`); // Лог 3
     return res.status(401).json({
       status: false,
       message: "User account has been deactivated, contact the administrator",
@@ -23,20 +27,32 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   const isMatch = await user.matchPassword(password);
+  console.log(`🔑 Совпадение пароля: ${isMatch}`); // Лог 4
 
   if (user && isMatch) {
-    createJWT(res, user._id);
+    console.log(`✅ Успешный вход, user._id: ${user._id}`); // Лог 5
 
+    // Устанавливаем httpOnly куку с токеном
+    createJWT(res, user._id);
+    console.log(`🍪 Кука createJWT вызвана`); // Лог 6
+
+    // Генерируем токен для возврата в теле ответа
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    console.log(`🔑 Сгенерирован токен (первые 20 символов): ${token.substring(0,20)}...`); // Лог 7
+
+    // Удаляем пароль из объекта пользователя перед отправкой
     user.password = undefined;
 
-    res.status(200).json(user);
+    // Отправляем один ответ с пользователем и токеном
+    console.log(`📤 Отправка ответа с токеном`); // Лог 8
+    res.status(200).json({ user, token });
   } else {
-    return res
-      .status(401)
-      .json({ status: false, message: "Invalid email or password" });
+    console.log(`❌ Неверный пароль для: ${email}`); // Лог 9
+    return res.status(401).json({ status: false, message: "Invalid email or password" });
   }
 });
-
 // POST - Register a new user
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, isAdmin, role, title } = req.body;

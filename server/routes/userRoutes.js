@@ -13,6 +13,7 @@ import {
   updateUserProfile,
 } from "../controllers/userController.js";
 import { isAdminRoute, protectRoute } from "../middlewares/authMiddleware.js";
+console.log('Импортированная loginUser:', loginUser);
 
 const router = express.Router();
 
