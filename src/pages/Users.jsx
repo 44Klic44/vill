@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import Title from "../components/Title";
 import AddUser from "../components/AddUser";
 import Dialogs, { UserAction } from "../components/task/Dialogs"; // импорт диалогов
+import { useGetTeamListsQuery } from "../redux/slices/api/userApiSlice.js";
 
 // Вспомогательная функция для получения инициалов
 const getInitials = (name) => {
@@ -26,7 +27,9 @@ const Users = () => {
   const [open, setOpen] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [selected, setSelected] = useState(null);
+const { data, isLoading, error } = useGetTeamListsQuery({});
 
+console.log(data, error);
   // Заглушки для API (замените на реальные мутации, когда они появятся)
   const deleteUser = async (id) => {
     console.log("Deleting user:", id);

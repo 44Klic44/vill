@@ -6,7 +6,9 @@ import Button from "./Button";
 import Loading from "./Loader";
 import ModalWrapper from "./ModalWrapper";
 import Textbox from "./Textbox";
-import { useRegisterMutation } from "../redux/slices/api/authApiSlice";
+import { useRegisterMutation } from "../redux/slices/api/authApiSlice.js";
+import { useDispatch } from "react-redux";
+import { useUpdateUserMutation } from "../redux/slices/api/userApiSlice.js";
 
 const AddUser = ({ open, setOpen }) => {
   const {
@@ -16,22 +18,33 @@ const AddUser = ({ open, setOpen }) => {
     reset,
   } = useForm();
 
+ const dispatch = useDispatch();
+
   const [addNewUser, { isLoading }] = useRegisterMutation();
 
-  const handleOnSubmit = async (data) => {
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
+    const handleOnSubmit = async (data) => {
     try {
-      // При создании пользователя передаём данные, включая пароль.
-      // Здесь пароль задаётся равным email (только для примера).
-      await addNewUser({
-        ...data,
-        password: data.email, // или другая логика генерации пароля
-      }).unwrap();
-      toast.success("New user added successfully");
-      reset(); // очищаем форму
-      setTimeout(() => setOpen(false), 1500);
+      if (userData) {
+        const res = await updateUser(data).unwrap();
+        toast.success(res?.message);
+        if (userData?._id === user?._id) {
+          dispatch(setCredentials({ ...res?.user }));
+        }
+      } else {
+        const res = await addNewUser({
+          ...data,
+          password: data?.email,
+        }).unwrap();
+        toast.success("New User added successfully");
+      }
+
+      setTimeout(() => {
+        setOpen(false);
+      }, 1500);
     } catch (err) {
-      console.error(err);
-      toast.error(err?.data?.message || err.error || "Something went wrong");
+      console.log(err);
+      toast.error(err?.data?.message || err.error);
     }
   };
 
