@@ -1,17 +1,14 @@
+// src/pages/Users.jsx
 import React, { useState } from "react";
 import clsx from "clsx";
 import { IoMdAdd } from "react-icons/io";
 import { toast } from "sonner";
-
-// Импорты из проекта
-import summary from "../assets/data";
 import Button from "../components/Button";
 import Title from "../components/Title";
 import AddUser from "../components/AddUser";
-import Dialogs, { UserAction } from "../components/task/Dialogs"; // импорт диалогов
-import { useGetTeamListsQuery } from "../redux/slices/api/userApiSlice.js";
+import Dialogs, { UserAction } from "../components/task/Dialogs";
+import { useGetTeamListsQuery, useDeleteUserMutation, useUserActionMutation } from "../redux/slices/api/userApiSlice.js";
 
-// Вспомогательная функция для получения инициалов
 const getInitials = (name) => {
   if (!name) return "?";
   return name
@@ -23,26 +20,14 @@ const getInitials = (name) => {
 };
 
 const Users = () => {
-  const [openDialog, setOpenDialog] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [selected, setSelected] = useState(null);
-const { data, isLoading, error } = useGetTeamListsQuery({});
 
-console.log(data, error);
-  // Заглушки для API (замените на реальные мутации, когда они появятся)
-  const deleteUser = async (id) => {
-    console.log("Deleting user:", id);
-    return { data: { message: "User deleted (demo)" } };
-  };
-  const userAction = async ({ isActive, id }) => {
-    console.log("Changing user status:", id, isActive);
-    return { data: { message: "User status updated (demo)" } };
-  };
-  const refetch = () => {
-    // заглушка для обновления списка
-    console.log("Refetch users");
-  };
+  const { data, isLoading, refetch } = useGetTeamListsQuery();
+  const [deleteUser] = useDeleteUserMutation();
+  const [userAction] = useUserActionMutation();
 
   const deleteClick = (id) => {
     setSelected(id);
@@ -61,16 +46,11 @@ console.log(data, error);
 
   const userActionHandler = async () => {
     try {
-      const res = await userAction({
-        isActive: !selected?.isActive,
-        id: selected?._id,
-      });
-      refetch();
-      toast.success(res?.data?.message);
+      await userAction({ isActive: !selected?.isActive, id: selected?._id }).unwrap();
+      toast.success("User status updated successfully");
       setSelected(null);
-      setTimeout(() => {
-        setOpenAction(false);
-      }, 500);
+      refetch();
+      setOpenAction(false);
     } catch (err) {
       console.log(err);
       toast.error(err?.data?.message || err.error);
@@ -79,13 +59,11 @@ console.log(data, error);
 
   const deleteHandler = async () => {
     try {
-      const res = await deleteUser(selected);
-      refetch();
-      toast.success(res?.data?.message);
+      await deleteUser(selected).unwrap();
+      toast.success("User deleted successfully");
       setSelected(null);
-      setTimeout(() => {
-        setOpenDialog(false);
-      }, 500);
+      refetch();
+      setOpenDialog(false);
     } catch (err) {
       console.log(err);
       toast.error(err?.data?.message || err.error);
@@ -93,33 +71,31 @@ console.log(data, error);
   };
 
   const TableHeader = () => (
-    <thead className='border-b border-gray-300 dark:border-gray-600'>
-      <tr className='text-black dark:text-white text-left'>
-        <th className='py-2'>Full Name</th>
-        <th className='py-2'>Title</th>
-        <th className='py-2'>Email</th>
-        <th className='py-2'>Role</th>
-        <th className='py-2'>Active</th>
-        <th className='py-2 text-right'>Actions</th>
+    <thead className="border-b border-gray-300 dark:border-gray-600">
+      <tr className="text-black dark:text-white text-left">
+        <th className="py-2">Full Name</th>
+        <th className="py-2">Title</th>
+        <th className="py-2">Email</th>
+        <th className="py-2">Role</th>
+        <th className="py-2">Active</th>
+        <th className="py-2 text-right">Actions</th>
       </tr>
     </thead>
   );
 
   const TableRow = ({ user }) => (
-    <tr className='border-b border-gray-200 text-gray-600 hover:bg-gray-400/10'>
-      <td className='p-2'>
-        <div className='flex items-center gap-3'>
-          <div className='w-9 h-9 rounded-full text-white flex items-center justify-center text-sm bg-blue-700'>
-            <span className='text-xs md:text-sm text-center'>
-              {getInitials(user.name)}
-            </span>
+    <tr className="border-b border-gray-200 text-gray-600 hover:bg-gray-400/10">
+      <td className="p-2">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full text-white flex items-center justify-center text-sm bg-blue-700">
+            <span className="text-xs md:text-sm text-center">{getInitials(user.name)}</span>
           </div>
           {user.name}
         </div>
       </td>
-      <td className='p-2'>{user.title}</td>
-      <td className='p-2'>{user.email}</td>
-      <td className='p-2'>{user.role}</td>
+      <td className="p-2">{user.title}</td>
+      <td className="p-2">{user.email}</td>
+      <td className="p-2">{user.role}</td>
       <td>
         <button
           onClick={() => userStatusClick(user)}
@@ -131,69 +107,37 @@ console.log(data, error);
           {user?.isActive ? "Active" : "Disabled"}
         </button>
       </td>
-      <td className='p-2 flex gap-4 justify-end'>
-        <Button
-          className='text-blue-600 hover:text-blue-500 font-semibold sm:px-0'
-          label='Edit'
-          type='button'
-          onClick={() => editClick(user)}
-        />
-        <Button
-          className='text-red-700 hover:text-red-500 font-semibold sm:px-0'
-          label='Delete'
-          type='button'
-          onClick={() => deleteClick(user?._id)}
-        />
+      <td className="p-2 flex gap-4 justify-end">
+        <Button label="Edit" type="button" onClick={() => editClick(user)} className="text-blue-600 hover:text-blue-500 font-semibold sm:px-0"/>
+        <Button label="Delete" type="button" onClick={() => deleteClick(user?._id)} className="text-red-700 hover:text-red-500 font-semibold sm:px-0"/>
       </td>
     </tr>
   );
 
   return (
     <>
-      <div className='w-full md:px-1 px-0 mb-6'>
-        <div className='flex items-center justify-between mb-8'>
-          <Title title='Team Members' />
-          <Button
-            label='Add New User'
-            icon={<IoMdAdd className='text-lg' />}
-            className='flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5'
-            onClick={() => setOpen(true)}
-          />
+      <div className="w-full md:px-1 px-0 mb-6">
+        <div className="flex items-center justify-between mb-8">
+          <Title title="Team Members" />
+          <Button label="Add New User" icon={<IoMdAdd className="text-lg" />} className="flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5" onClick={() => setOpen(true)}/>
         </div>
-        <div className='bg-white dark:bg-[#1f1f1f] px-2 md:px-4 py-4 shadow rounded'>
-          <div className='overflow-x-auto'>
-            <table className='w-full mb-5'>
+        <div className="bg-white dark:bg-[#1f1f1f] px-2 md:px-4 py-4 shadow rounded">
+          <div className="overflow-x-auto">
+            <table className="w-full mb-5">
               <TableHeader />
               <tbody>
-                {data?.map((user, index) => (
-                  <TableRow key={user._id || index} user={user} />
-                ))}
+                {data?.map((user) => <TableRow key={user._id} user={user} />)}
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <AddUser
-        open={open}
-        setOpen={setOpen}
-        userData={selected}
-        key={new Date().getTime().toString()}
-      />
+      <AddUser open={open} setOpen={setOpen} userData={selected} />
 
-      <Dialogs
-        open={openDialog}
-        setOpen={setOpenDialog}
-        onClick={deleteHandler}
-        type="delete"
-        msg="Are you sure you want to delete this user?"
-      />
+      <Dialogs open={openDialog} setOpen={setOpenDialog} onClick={deleteHandler} type="delete" msg="Are you sure you want to delete this user?" />
 
-      <UserAction
-        open={openAction}
-        setOpen={setOpenAction}
-        onClick={userActionHandler}
-      />
+      <UserAction open={openAction} setOpen={setOpenAction} onClick={userActionHandler} />
     </>
   );
 };
