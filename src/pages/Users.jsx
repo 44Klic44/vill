@@ -165,7 +165,7 @@ console.log(data, error);
             <table className='w-full mb-5'>
               <TableHeader />
               <tbody>
-                {summary.users?.map((user, index) => (
+                {data?.map((user, index) => (
                   <TableRow key={user._id || index} user={user} />
                 ))}
               </tbody>
