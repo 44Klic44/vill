@@ -134,17 +134,27 @@ const getTeamList = asyncHandler(async (req, res) => {
 });
 
 // @GET  - get user notifications
-const getNotificationsList = asyncHandler(async (req, res) => {
-  const { userId } = req.user;
+ const getNotificationsList = asyncHandler(async (req, res) => {
+  try {
+    console.log('🔍 req.user.userId =', req.user.userId);
+    console.log('🔍 Тип req.user.userId:', typeof req.user.userId);
 
-  const notice = await Notice.find({
-    team: userId,
-    isRead: { $nin: [userId] },
-  })
-    .populate("task", "title")
-    .sort({ _id: -1 });
+    const notices = await Notice.find({ team: req.user.userId })
+      .populate('task', 'title')
+      .sort({ createdAt: -1 });
 
-  res.status(200).json(notice);
+    console.log('📦 Найдено уведомлений:', notices.length);
+    if (notices.length === 0) {
+      // Для отладки: попробуем найти по строке
+      const noticesAsString = await Notice.find({ team: req.user.userId.toString() });
+      console.log('🧪 Поиск по строке:', noticesAsString.length);
+    }
+
+    res.json(notices);
+  } catch (error) {
+    console.error('❌ Ошибка:', error);
+    res.status(500).json({ message: error.message });
+  }
 });
 
 // @GET  - get user task status

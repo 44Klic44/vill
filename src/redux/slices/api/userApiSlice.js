@@ -54,21 +54,23 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    getNotifications: builder.query({
+   getNotifications: builder.query({
       query: () => ({
         url: `${USERS_URL}/notifications`,
         method: "GET",
         credentials: "include",
       }),
+      providesTags: ['Notification'], // <- добавлено
     }),
 
-    markNotiAsRead: builder.mutation({
+   markNotiAsRead: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/read-noti?isReadType=${data.type}&id=${data?.id}`,
         method: "PUT",
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ['Notification'], // <- добавлено
     }),
 
     changePassword: builder.mutation({
