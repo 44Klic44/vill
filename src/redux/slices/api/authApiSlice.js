@@ -1,8 +1,6 @@
 import { USERS_URL } from "../../../utils/contants.js";
 import { apiSlice } from "../apiSlice";
 
-
-
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -20,6 +18,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ['User'], // ← добавляем инвалидацию
     }),
     logout: builder.mutation({
       query: () => ({
@@ -31,7 +30,4 @@ export const authApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-
-
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
-  authApiSlice;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation } = authApiSlice;

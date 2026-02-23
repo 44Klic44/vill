@@ -3,6 +3,17 @@ import { apiSlice } from "../apiSlice";
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    // Запрос списка пользователей — предоставляет тег 'User'
+    getTeamLists: builder.query({
+      query: () => ({
+        url: `${USERS_URL}/get-team`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ['User'], // ← при получении данных, они помечаются тегом
+    }),
+
+    // Обновление пользователя — инвалидирует тег 'User'
     updateUser: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/profile`,
@@ -10,16 +21,31 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ['User'], // ← после выполнения запросы с тегом 'User' будут перезапрошены
     }),
 
-    getTeamLists: builder.query({
-      query: () => ({
-        url: `${USERS_URL}/get-team`,
-        method: "GET",
+    // Удаление пользователя — инвалидирует тег 'User'
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `${USERS_URL}/${id}`,
+        method: "DELETE",
         credentials: "include",
       }),
+      invalidatesTags: ['User'],
     }),
 
+    // Изменение статуса (активен/неактивен) — тоже инвалидирует тег
+    userAction: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/${data?.id}`,
+        method: "PUT",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    // Остальные эндпоинты (не изменяющие список пользователей) оставляем без тегов
     getUserTaskStatus: builder.query({
       query: () => ({
         url: `${USERS_URL}/get-status`,
@@ -32,23 +58,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${USERS_URL}/notifications`,
         method: "GET",
-        credentials: "include",
-      }),
-    }),
-
-    deleteUser: builder.mutation({
-      query: (id) => ({
-        url: `${USERS_URL}/${id}`,
-        method: "DELETE",
-        credentials: "include",
-      }),
-    }),
-
-    userAction: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/${data?.id}`,
-        method: "PUT",
-        body: data,
         credentials: "include",
       }),
     }),

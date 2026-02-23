@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
 
 export const apiSlice = createApi({
   baseQuery,
-  tagTypes: [],
+  tagTypes: ['User'],   // ← добавляем тег для пользователей
   endpoints: (builder) => ({}),
 });
 
