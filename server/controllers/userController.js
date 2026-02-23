@@ -183,6 +183,9 @@ const markNotificationRead = asyncHandler(async (req, res) => {
 
 // PUT - Update user profile
 const updateUserProfile = asyncHandler(async (req, res) => {
+  console.log('🔥 updateUserProfile ВЫЗВАН');
+  console.log('👉 req.user:', req.user); // должен быть текущий пользователь из токена
+  console.log('👉 req.body:', req.body); // какие поля приходят
   const { userId, isAdmin } = req.user;
   const { _id } = req.body;
 
@@ -216,7 +219,11 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 // PUT - active/disactivate user profile
-const activateUserProfile = asyncHandler(async (req, res) => {
+ const activateUserProfile = asyncHandler(async (req, res) => {
+  console.log('🔥 activateUserProfile ВЫЗВАН');
+  console.log('👉 req.user:', req.user);
+  console.log('👉 req.params:', req.params); // должен быть id из URL
+  console.log('👉 req.body:', req.body);
   const { id } = req.params;
 
   const user = await User.findById(id);

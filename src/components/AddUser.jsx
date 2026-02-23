@@ -59,7 +59,10 @@ const AddUser = ({ open, setOpen, userData }) => {
         setOpen(false);
       }, 500);
     } catch (err) {
-      console.log(err);
+    console.log('❌ Полная ошибка:', err);
+  console.log('❌ Статус:', err.status);
+  console.log('❌ Данные ответа:', err.data);
+  toast.error(err?.data?.message || err.error || "Something went wrong");
       toast.error(err?.data?.message || err.error || "Something went wrong");
     }
   };
