@@ -26,22 +26,21 @@ const AddUser = ({ open, setOpen, userData }) => {
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   // ✅ ВАЖНО — данные подтягиваются при открытии модалки
- useEffect(() => {
+useEffect(() => {
   if (!open) return;
 
-  console.log("=== ADD USER OPENED ===");
-  console.log("userData:", userData);
+  console.log("🧠 OPEN AddUser, userData:", userData);
 
-  if (userData) {
-    // режим редактирования
+  const currentUser = userData?.user || userData || null; // на всякий случай, если приходит напрямую объект пользователя
+
+  if (currentUser) {
     reset({
-      name: userData.name || "",
-      title: userData.title || "",
-      email: userData.email || "",
-      role: userData.role || "",
+      name: currentUser.name || "",
+      title: currentUser.title || "",
+      email: currentUser.email || "",
+      role: currentUser.role || "",
     });
   } else {
-    // режим создания
     reset({
       name: "",
       title: "",
@@ -50,6 +49,9 @@ const AddUser = ({ open, setOpen, userData }) => {
     });
   }
 }, [open, userData, reset]);
+
+
+
 
   const handleOnSubmit = async (data) => {
     try {
