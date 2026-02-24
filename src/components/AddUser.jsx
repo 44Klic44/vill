@@ -1,4 +1,3 @@
-// src/components/AddUser.jsx
 import { Dialog } from "@headlessui/react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +9,7 @@ import Textbox from "./Textbox";
 import { useRegisterMutation } from "../redux/slices/api/authApiSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useUpdateUserMutation } from "../redux/slices/api/userApiSlice.js";
-import { setCredentials } from "../redux/slices/authSlice.js"; // убедитесь, что импорт корректный
+import { setCredentials } from "../redux/slices/authSlice.js";
 
 const AddUser = ({ open, setOpen, userData }) => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -21,49 +20,63 @@ const AddUser = ({ open, setOpen, userData }) => {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm();
 
   const [addNewUser, { isLoading }] = useRegisterMutation();
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
-  // Заполняем форму при редактировании
-  useEffect(() => {
-    if (userData) {
-      setValue("name", userData.name);
-      setValue("title", userData.title);
-      setValue("email", userData.email);
-      setValue("role", userData.role);
-    } else {
-      reset();
-    }
-  }, [userData, setValue, reset]);
+  // ✅ ВАЖНО — данные подтягиваются при открытии модалки
+ useEffect(() => {
+  if (!open) return;
+
+  console.log("=== ADD USER OPENED ===");
+  console.log("userData:", userData);
+
+  if (userData) {
+    // режим редактирования
+    reset({
+      name: userData.name || "",
+      title: userData.title || "",
+      email: userData.email || "",
+      role: userData.role || "",
+    });
+  } else {
+    // режим создания
+    reset({
+      name: "",
+      title: "",
+      email: "",
+      role: "",
+    });
+  }
+}, [open, userData, reset]);
 
   const handleOnSubmit = async (data) => {
     try {
       if (userData) {
-        // редактирование пользователя
-        const res = await updateUser({ ...data, _id: userData._id }).unwrap();
-        toast.success(res?.message);
-        if (userData._id === currentUser?._id) {
-          dispatch(setCredentials({ ...res?.user }));
+        // ✅ Обновление профиля (без передачи _id)
+        const res = await updateUser(data).unwrap();
+
+        toast.success(res?.message || "Profile updated successfully");
+
+        // ✅ Если редактируем себя — обновляем auth state
+        if (currentUser?._id === userData?._id) {
+          dispatch(setCredentials(res?.user));
         }
       } else {
-        // добавление нового пользователя
-        await addNewUser({ ...data, password: data?.email }).unwrap();
-        toast.success("New User added successfully");
-        reset();
+        // Создание нового пользователя
+        await addNewUser({
+          ...data,
+          password: data.email,
+        }).unwrap();
+
+        toast.success("New user added successfully");
       }
 
-      setTimeout(() => {
-        setOpen(false);
-      }, 500);
+      setOpen(false);
     } catch (err) {
-    console.log('❌ Полная ошибка:', err);
-  console.log('❌ Статус:', err.status);
-  console.log('❌ Данные ответа:', err.data);
-  toast.error(err?.data?.message || err.error || "Something went wrong");
-      toast.error(err?.data?.message || err.error || "Something went wrong");
+      console.log("Update error:", err);
+      toast.error(err?.data?.message || "Something went wrong");
     }
   };
 
@@ -76,6 +89,7 @@ const AddUser = ({ open, setOpen, userData }) => {
         >
           {userData ? "EDIT USER" : "ADD NEW USER"}
         </Dialog.Title>
+
         <div className="mt-2 flex flex-col gap-6">
           <Textbox
             placeholder="Full name"
@@ -83,36 +97,41 @@ const AddUser = ({ open, setOpen, userData }) => {
             label="Full Name"
             className="w-full rounded"
             register={register("name", { required: "Full name is required!" })}
-            error={errors.name ? errors.name.message : ""}
+            error={errors.name?.message}
           />
+
           <Textbox
             placeholder="Title"
             type="text"
             label="Title"
             className="w-full rounded"
             register={register("title", { required: "Title is required!" })}
-            error={errors.title ? errors.title.message : ""}
+            error={errors.title?.message}
           />
+
           <Textbox
             placeholder="Email Address"
             type="email"
             label="Email Address"
             className="w-full rounded"
-            register={register("email", { required: "Email Address is required!" })}
-            error={errors.email ? errors.email.message : ""}
+            register={register("email", { required: "Email is required!" })}
+            error={errors.email?.message}
           />
+
           <Textbox
             placeholder="Role"
             type="text"
             label="Role"
             className="w-full rounded"
-            register={register("role", { required: "User role is required!" })}
-            error={errors.role ? errors.role.message : ""}
+            register={register("role", { required: "Role is required!" })}
+            error={errors.role?.message}
           />
         </div>
 
         {(isLoading || isUpdating) ? (
-          <div className="py-5"><Loading /></div>
+          <div className="py-5">
+            <Loading />
+          </div>
         ) : (
           <div className="py-3 mt-4 sm:flex sm:flex-row-reverse">
             <Button
@@ -120,6 +139,7 @@ const AddUser = ({ open, setOpen, userData }) => {
               className="bg-blue-600 px-8 text-sm font-semibold text-white hover:bg-blue-700 sm:w-auto"
               label="Submit"
             />
+
             <Button
               type="button"
               className="bg-white px-5 text-sm font-semibold text-gray-900 sm:w-auto"

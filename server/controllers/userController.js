@@ -206,7 +206,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       ? _id
       : userId;
 
-  const user = await User.findById(id);
+const user = await User.findById(req.user.userId);
 
   if (user) {
     user.name = req.body.name || user.name;
@@ -257,32 +257,45 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 const changeUserPassword = asyncHandler(async (req, res) => {
-  const { userId } = req.user;
+  console.log("===== CHANGE PASSWORD BACKEND =====");
+  console.log("req.body:", req.body);
+  console.log("req.user:", req.user);
 
-  // Remove this condition
-  if (userId === "65ff94c7bb2de638d0c73f63") {
+  const { oldPassword, password } = req.body;
+
+  if (!oldPassword || !password) {
+    return res.status(400).json({
+      status: false,
+      message: "Old password and new password are required",
+    });
+  }
+
+  const user = await User.findById(req.user.userId); // ✅ ВАЖНО
+
+  if (!user) {
     return res.status(404).json({
       status: false,
-      message: "This is a test user. You can not chnage password. Thank you!!!",
+      message: "User not found",
     });
   }
 
-  const user = await User.findById(userId);
+  const isMatch = await user.matchPassword(oldPassword);
 
-  if (user) {
-    user.password = req.body.password;
-
-    await user.save();
-
-    user.password = undefined;
-
-    res.status(201).json({
-      status: true,
-      message: `Password chnaged successfully.`,
+  if (!isMatch) {
+    return res.status(400).json({
+      status: false,
+      message: "Old password is incorrect",
     });
-  } else {
-    res.status(404).json({ status: false, message: "User not found" });
   }
+
+  user.password = password; // ✅ теперь пароль присваивается правильно
+
+  await user.save();
+
+  res.status(200).json({
+    status: true,
+    message: "Password changed successfully",
+  });
 });
 
 // DELETE - delete user account

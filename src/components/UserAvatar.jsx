@@ -10,11 +10,14 @@ import { logout } from '../redux/slices/authSlice.js';
 import { useDispatch } from 'react-redux'; 
 import { useNavigate } from 'react-router-dom'; 
 import { toast } from 'sonner'; 
+import AddUser from './AddUser';
+import ChangePassword from './task/ChangePassword';
 
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
   const { user } = useSelector((state) => state.auth);
+  console.log("CURRENT USER:", user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutUser] = useLogoutMutation();
@@ -94,8 +97,8 @@ const UserAvatar = () => {
         </Menu>
       </div>
 
-      {/* <AddUser open={open} setOpen={setOpen} userData={user} /> */}
-      {/* <ChangePassword open={openPassword} setOpen={setOpenPassword} /> */}
+      <AddUser open={open} setOpen={setOpen} userData={user} /> 
+      <ChangePassword open={openPassword} setOpen={setOpenPassword} />
     </>
   );
 }

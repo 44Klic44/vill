@@ -73,14 +73,17 @@ export const userApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Notification'], // <- добавлено
     }),
 
-    changePassword: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/change-password`,
-        method: "PUT",
-        body: data,
-        credentials: "include",
-      }),
-    }),
+ changePassword: builder.mutation({
+  query: (data) => {
+    console.log("RTK sending:", data);
+    return {
+      url: `${USERS_URL}/change-password`,
+      method: "PUT",
+      body: data,
+      credentials: "include",
+    };
+  },
+}),
   }),
 });
 
