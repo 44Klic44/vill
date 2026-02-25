@@ -7,17 +7,11 @@ import {
   MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
 import { useSelector } from "react-redux";
-import {
-  BGS,
-  PRIOTITYSTYELS,
-  TASK_TYPE,
-  formatDate,
-} from "../utils/index";
-import TaskDialog from "./task/TaskDialog"; // импорт восстановлен
+import { BGS, PRIOTITYSTYELS, TASK_TYPE, formatDate } from "../utils";
+import TaskDialog from "./task/TaskDialog";
 import { BiMessageAltDetail } from "react-icons/bi";
 import { FaList } from "react-icons/fa";
 import UserInfo from "./UserInfo";
-import { teamMembers } from "../assets/data";
 import { IoMdAdd } from "react-icons/io";
 import AddSubTask from "./task/AddSubTask";
 
@@ -31,19 +25,16 @@ const TaskCard = ({ task }) => {
   const { user } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
 
-  const getUserFromId = (id) => {
-    return teamMembers[id] || { name: id, title: "", email: "" };
-  };
-
   const activities = task?.activities?.length ?? 0;
   const assets = task?.assets?.length ?? 0;
   const subTasks = task?.subTasks?.length ?? 0;
 
-  console.log("TaskCard рендерится для задачи:", task?.title);
+  // Логируем team для отладки (можно убрать позже)
+  console.log("Task team:", task?.team);
 
   return (
     <div className="w-full h-fit bg-white dark:bg-[#1f1f1f] shadow-md p-4 rounded">
-      {/* Верхняя часть: приоритет + меню (всегда показываем для теста) */}
+      {/* Верхняя часть: приоритет + меню */}
       <div className="w-full flex justify-between">
         <div
           className={clsx(
@@ -54,7 +45,6 @@ const TaskCard = ({ task }) => {
           <span className="text-lg">{ICONS[task?.priority]}</span>
           <span className="uppercase">{task?.priority} Priority</span>
         </div>
-        {/* Убрана проверка isAdmin – меню видно всем */}
         <TaskDialog task={task} />
       </div>
 
@@ -95,21 +85,23 @@ const TaskCard = ({ task }) => {
 
         {/* Аватарки участников */}
         <div className="flex flex-row-reverse">
-          {task?.team?.length > 0 &&
-            task.team.map((memberId, index) => {
-              const member = getUserFromId(memberId);
-              return (
-                <div
-                  key={index}
-                  className={clsx(
-                    "w-7 h-7 rounded-full text-white flex items-center justify-center text-sm -mr-1",
-                    BGS[index % BGS.length]
-                  )}
-                >
-                  <UserInfo user={member} />
-                </div>
-              );
-            })}
+          {task?.team?.length > 0 ? (
+            task.team.map((member, index) => (
+              <div
+                key={member._id || index}
+                className={clsx(
+                  "w-7 h-7 rounded-full text-white flex items-center justify-center text-sm -mr-1",
+                  BGS[index % BGS.length]
+                )}
+              >
+                {/* Передаём объект пользователя напрямую */}
+                <UserInfo user={member} />
+              </div>
+            ))
+          ) : (
+            // Если команды нет, можно ничего не рендерить или показать заглушку
+            null
+          )}
         </div>
       </div>
 

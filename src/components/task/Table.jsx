@@ -21,11 +21,9 @@ import {
 import UserInfo from "../UserInfo";
 import Button from "../Button";
 import TaskColor from "./TaskColor";
-import { teamMembers } from "../../assets/data";
-import Dialogs from "./Dialogs";      // реальный компонент подтверждения
-import AddTask from "./AddTask";       // реальный компонент добавления/редактирования
+import Dialogs from "./Dialogs";
+import AddTask from "./AddTask";
 
-// Временный компонент для отображения активов (можно оставить или вынести)
 const TaskAssets = ({ activities, subTasks, assets }) => (
   <div className="flex items-center gap-2 text-sm text-gray-600">
     <div className="flex items-center gap-1">
@@ -90,12 +88,8 @@ const Table = ({ tasks }) => {
   );
 
   const TableRow = ({ task }) => {
-    const teamMembersData = task?.team?.map(id => teamMembers[id] || {
-      name: id,
-      title: "",
-      email: "",
-      _id: id,
-    }) || [];
+    // task.team уже содержит массив объектов пользователей (благодаря populate)
+    const teamMembers = task?.team || [];
 
     return (
       <tr className='border-b border-gray-200 text-gray-600 hover:bg-gray-300/10'>
@@ -137,7 +131,7 @@ const Table = ({ tasks }) => {
 
         <td className='py-2'>
           <div className='flex'>
-            {teamMembersData.map((member, index) => (
+            {teamMembers.map((member, index) => (
               <div
                 key={member._id || index}
                 className={clsx(
