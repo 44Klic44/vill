@@ -4,22 +4,20 @@ import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowUp,
+  MdKeyboardArrowRight,
 } from "react-icons/md";
-import { MdEditNote } from "react-icons/md";
-
-// import { LuClipboardEdit } from "react-icons/lu";
 import { FaNewspaper } from "react-icons/fa";
 import { FaArrowsToDot } from "react-icons/fa6";
 import moment from "moment";
 import "moment/locale/ru";
 import clsx from "clsx";
 
-import { useGetDasboardStatsQuery } from "../redux/slices/api/taskApiSlice.js";
+import { useGetDasboardStatsQuery } from "../redux/slices/api/taskApiSlice";
 import { Chart } from "../components/Chart";
 import UserInfo from "../components/UserInfo";
 
 // ------------------------------------------------------------
-// Константы для стилей (как в эталонном компоненте)
+// Константы для стилей
 // ------------------------------------------------------------
 const TASK_TYPE = {
   todo: "bg-red-500",
@@ -31,6 +29,7 @@ const PRIORITY_STYLES = {
   high: "text-red-600",
   medium: "text-yellow-600",
   low: "text-green-600",
+  normal: "text-gray-600", // добавлено
 };
 
 const BGS = [
@@ -53,7 +52,7 @@ const getInitials = (name) => {
 };
 
 // ------------------------------------------------------------
-// Карточка статистики (из правильного компонента)
+// Карточка статистики
 // ------------------------------------------------------------
 const Card = ({ label, count, bg, icon }) => (
   <div className="w-full h-32 bg-white p-5 shadow-md rounded-md flex items-center justify-between">
@@ -74,13 +73,14 @@ const Card = ({ label, count, bg, icon }) => (
 );
 
 // ------------------------------------------------------------
-// Таблица задач (из правильного компонента)
+// Таблица задач
 // ------------------------------------------------------------
-const TaskTable = ({ tasks }) => {
+const TaskTable = ({ tasks, users }) => {
   const ICONS = {
     high: <MdKeyboardDoubleArrowUp />,
     medium: <MdKeyboardArrowUp />,
     low: <MdKeyboardArrowDown />,
+    normal: <MdKeyboardArrowRight />,
   };
 
   const TableHeader = () => (
@@ -94,49 +94,61 @@ const TaskTable = ({ tasks }) => {
     </thead>
   );
 
-  const TableRow = ({ task }) => (
-    <tr className="border-b border-gray-300 text-gray-600 hover:bg-gray-300/10">
-      <td className="py-2">
-        <div className="flex items-center gap-2">
-          <div
-            className={clsx("w-4 h-4 rounded-full", TASK_TYPE[task.stage])}
-          />
-          <p className="text-base text-black">{task.title}</p>
-        </div>
-      </td>
+  const TableRow = ({ task }) => {
+    // Преобразуем ID пользователей в объекты, если task.team содержит ID
+    const teamMembers = (task.team || [])
+      .map((member) => {
+        if (typeof member === "string") {
+          return users?.find((u) => u._id === member);
+        }
+        return member; // если уже объект
+      })
+      .filter(Boolean);
 
-      <td className="py-2">
-        <div className="flex gap-1 items-center">
-          <span className={clsx("text-lg", PRIORITY_STYLES[task.priority])}>
-            {ICONS[task.priority]}
-          </span>
-          <span className="capitalize">{task.priority}</span>
-        </div>
-      </td>
-
-      <td className="py-2">
-        <div className="flex">
-          {task.team?.map((member, index) => (
+    return (
+      <tr className="border-b border-gray-300 text-gray-600 hover:bg-gray-300/10">
+        <td className="py-2">
+          <div className="flex items-center gap-2">
             <div
-              key={member._id || index}
-              className={clsx(
-                "w-7 h-7 rounded-full text-white flex items-center justify-center text-sm -mr-1",
-                BGS[index % BGS.length]
-              )}
-            >
-              <UserInfo user={member} />
-            </div>
-          ))}
-        </div>
-      </td>
+              className={clsx("w-4 h-4 rounded-full", TASK_TYPE[task.stage])}
+            />
+            <p className="text-base text-black">{task.title}</p>
+          </div>
+        </td>
 
-      <td className="py-2 hidden md:block">
-        <span className="text-base text-gray-600">
-          {moment(task.createdAt).fromNow()}
-        </span>
-      </td>
-    </tr>
-  );
+        <td className="py-2">
+          <div className="flex gap-1 items-center">
+            <span className={clsx("text-lg", PRIORITY_STYLES[task.priority])}>
+              {ICONS[task.priority]}
+            </span>
+            <span className="capitalize">{task.priority}</span>
+          </div>
+        </td>
+
+        <td className="py-2">
+          <div className="flex">
+            {teamMembers.map((member, index) => (
+              <div
+                key={member._id || index}
+                className={clsx(
+                  "w-7 h-7 rounded-full text-white flex items-center justify-center text-sm -mr-1",
+                  BGS[index % BGS.length]
+                )}
+              >
+                <UserInfo user={member} />
+              </div>
+            ))}
+          </div>
+        </td>
+
+        <td className="py-2 hidden md:block">
+          <span className="text-base text-gray-600">
+            {moment(task.createdAt).fromNow()}
+          </span>
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <div className="w-full md:w-2/3 bg-white px-2 md:px-4 pt-4 pb-4 shadow-md rounded">
@@ -153,7 +165,7 @@ const TaskTable = ({ tasks }) => {
 };
 
 // ------------------------------------------------------------
-// Таблица пользователей (из правильного компонента)
+// Таблица пользователей
 // ------------------------------------------------------------
 const UserTable = ({ users }) => {
   const TableHeader = () => (
@@ -221,10 +233,18 @@ const Dashboard = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
 
+  // Для отладки – посмотрите в консоль, что приходит с сервера
+  useEffect(() => {
+    if (data) {
+      console.log("Dashboard data:", data);
+      console.log("last10Task:", data.last10Task);
+      console.log("users:", data.users);
+    }
+  }, [data]);
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading data</p>;
 
-  // Данные с сервера
   const totals = data.tasks || {};
   const stats = [
     {
@@ -245,7 +265,7 @@ const Dashboard = () => {
       _id: "3",
       label: "TASK IN PROGRESS",
       total: totals["in progress"] || 0,
-      icon: <MdEditNote  />,
+      icon: <MdAdminPanelSettings />, // можно заменить на MdEditNote
       bg: "bg-[#f59e0b]",
     },
     {
@@ -276,7 +296,7 @@ const Dashboard = () => {
 
       {/* Таблицы задач и пользователей */}
       <div className="w-full flex flex-col md:flex-row gap-4 2xl:gap-10 py-8">
-        <TaskTable tasks={data.last10Task} />
+        <TaskTable tasks={data.last10Task} users={data.users} />
         <UserTable users={data.users} />
       </div>
     </div>
