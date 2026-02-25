@@ -3,6 +3,15 @@ import { Fragment } from "react";
 import { getInitials } from "../utils";
 
 export default function UserInfo({ user }) {
+  // Если user не объект или отсутствует name, показываем заглушку
+  if (!user || typeof user !== 'object' || !user.name) {
+    return (
+      <div className="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm">
+        ?
+      </div>
+    );
+  }
+
   return (
     <div className='px-4'>
       <Popover className='relative'>
@@ -11,7 +20,7 @@ export default function UserInfo({ user }) {
             <Popover.Button
               className={` group inline-flex items-center outline-none `}
             >
-              <span className='text-center'>{getInitials(user?.name)}</span>
+              <span className='text-center'>{getInitials(user.name)}</span>
             </Popover.Button>
             <Transition
               as={Fragment}
@@ -26,16 +35,16 @@ export default function UserInfo({ user }) {
                 <div className='flex items-center gap-4 rounded-lg shadow-lg bg-white p-8'>
                   <div className='w-16 h-16 bg-blue-600 rounded-full text-white flex items-center justify-center text-2xl '>
                     <span className='text-center font-bold'>
-                      {getInitials(user?.name)}
+                      {getInitials(user.name)}
                     </span>
                   </div>
                   <div className='flex flex-col gap-y-1'>
-                    <p className='text-black text-xl font-bold'>{user?.name}</p>
+                    <p className='text-black text-xl font-bold'>{user.name}</p>
                     <span className='text-base text-gray-500'>
-                      {user?.title}
+                      {user.title || 'No title'}
                     </span>
                     <span className='text-blue-500'>
-                      {user?.email ?? "email@example.com"}
+                      {user.email || 'email@example.com'}
                     </span>
                   </div>
                 </div>

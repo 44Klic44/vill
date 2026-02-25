@@ -239,7 +239,7 @@ const getTasks = asyncHandler(async (req, res) => {
   const { userId, isAdmin } = req.user;
   const { stage, isTrashed, search } = req.query;
 
-  let query = { isTrashed: isTrashed ? true : false };
+let query = { isTrashed: isTrashed === 'true' };
 
   if (!isAdmin) {
     query.team = { $all: [userId] };
