@@ -15,7 +15,12 @@ import Loading from "../components/Loader";
 import Dialogs from "../components/task/Dialogs";
 import TaskColor from "../components/task/TaskColor";
 import { PRIOTITYSTYELS, TASK_TYPE, formatDate } from "../utils/index";
-import { summary } from "../assets/data";
+
+// Импортируем необходимые хуки из API
+import {
+  useGetAllTaskQuery,
+  useDeleteRestoreTastMutation,
+} from "../redux/slices/api/taskApiSlice";
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -29,9 +34,24 @@ const Trash = () => {
   const [type, setType] = useState("delete");
   const [selected, setSelected] = useState("");
 
-  const data = { tasks: summary.last10Tasks };
-  const isLoading = false;
+  // Получаем удалённые задачи
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetAllTaskQuery({
+    strQuery: '',
+    isTrashed: true,
+    search: '',
+  });
 
+  const [deleteRestoreTask, { isLoading: isMutating }] = useDeleteRestoreTastMutation();
+
+  const tasks = data?.tasks || [];
+
+  // Обработчики
   const deleteAllClick = () => {
     setType("deleteAll");
     setMsg("Do you want to permanently delete all items?");
@@ -58,33 +78,41 @@ const Trash = () => {
     setOpenDialog(true);
   };
 
+  // Основной обработчик подтверждения
   const deleteRestoreHandler = async () => {
     try {
+      let result;
       switch (type) {
         case "delete":
-          toast.success(`Task ${selected} deleted (demo)`);
+          result = await deleteRestoreTask({ id: selected, actionType: "delete" }).unwrap();
+          toast.success(result?.message || "Task deleted permanently");
           break;
         case "deleteAll":
-          toast.success("All tasks deleted (demo)");
+          result = await deleteRestoreTask({ id: '', actionType: "deleteAll" }).unwrap();
+          toast.success(result?.message || "All tasks deleted permanently");
           break;
         case "restore":
-          toast.success(`Task ${selected} restored (demo)`);
+          result = await deleteRestoreTask({ id: selected, actionType: "restore" }).unwrap();
+          toast.success(result?.message || "Task restored");
           break;
         case "restoreAll":
-          toast.success("All tasks restored (demo)");
+          result = await deleteRestoreTask({ id: '', actionType: "restoreAll" }).unwrap();
+          toast.success(result?.message || "All tasks restored");
           break;
         default:
           break;
       }
-      setTimeout(() => {
-        setOpenDialog(false);
-      }, 500);
+      // После успешного действия обновляем список
+      refetch();
+      setOpenDialog(false);
     } catch (err) {
       console.log(err);
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err.error || "Something went wrong");
+      setOpenDialog(false);
     }
   };
 
+  // Вспомогательные компоненты таблицы (можно вынести, но для простоты оставим внутри)
   const TableHeader = () => (
     <thead className='border-b border-gray-300 dark:border-gray-600'>
       <tr className='text-black dark:text-white text-left'>
@@ -130,40 +158,56 @@ const Trash = () => {
     </tr>
   );
 
-  return isLoading ? (
-    <div className='py-10'>
-      <Loading />
-    </div>
-  ) : (
+  // Обработка состояний загрузки и ошибок
+  if (isLoading) {
+    return (
+      <div className='py-10'>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className='text-red-500 p-4'>
+        Error loading trash: {error?.data?.message || error?.message || 'Unknown error'}
+      </div>
+    );
+  }
+
+  return (
     <>
       <div className='w-full md:px-1 px-0 mb-6'>
         <div className='flex items-center justify-between mb-8'>
           <Title title='Trashed Tasks' />
-          {data?.tasks?.length > 0 && (
+          {tasks.length > 0 && (
             <div className='flex gap-2 md:gap-4 items-center'>
               <Button
                 label='Restore All'
                 icon={<MdOutlineRestore className='text-lg hidden md:flex' />}
                 className='flex flex-row-reverse gap-1 items-center text-black text-sm md:text-base rounded-md 2xl:py-2.5'
                 onClick={restoreAllClick}
+                disabled={isMutating}
               />
               <Button
                 label='Delete All'
                 icon={<MdDelete className='text-lg hidden md:flex' />}
                 className='flex flex-row-reverse gap-1 items-center text-red-600 text-sm md:text-base rounded-md 2xl:py-2.5'
                 onClick={deleteAllClick}
+                disabled={isMutating}
               />
             </div>
           )}
         </div>
-        {data?.tasks?.length > 0 ? (
+
+        {tasks.length > 0 ? (
           <div className='bg-white dark:bg-[#1f1f1f] px-2 md:px-6 py-4 shadow-md rounded'>
             <div className='overflow-x-auto'>
               <table className='w-full mb-5'>
                 <TableHeader />
                 <tbody>
-                  {data?.tasks?.map((tk, id) => (
-                    <TableRow key={tk._id || id} item={tk} />
+                  {tasks.map((tk) => (
+                    <TableRow key={tk._id} item={tk} />
                   ))}
                 </tbody>
               </table>
@@ -171,13 +215,13 @@ const Trash = () => {
           </div>
         ) : (
           <div className='w-full flex justify-center py-10'>
-            <p className='text-lg text-gray-500'>No Trashed Task</p>
+            <p className='text-lg text-gray-500'>No Trashed Tasks</p>
           </div>
         )}
       </div>
 
       <Dialogs
-        key={selected || 'dialog'}  // ← ключ для принудительного обновления
+        key={selected || 'dialog'}
         open={openDialog}
         setOpen={setOpenDialog}
         onClick={deleteRestoreHandler}
