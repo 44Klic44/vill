@@ -1,186 +1,100 @@
-import { Menu, Transition } from "@headlessui/react";
-import clsx from "clsx";
-import { Fragment, useState } from "react";
-import { AiTwotoneFolderOpen } from "react-icons/ai";
-import { BsThreeDots } from "react-icons/bs";
-import { FaExchangeAlt } from "react-icons/fa";
-import { HiDuplicate } from "react-icons/hi";
-import { MdAdd, MdOutlineEdit } from "react-icons/md";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import AddSubTask from "./AddSubTask";
-import AddTask from "./AddTask";
-import TaskColor from "./TaskColor";
-import { useSelector } from "react-redux";
-import Dialogs from "./Dialogs";
+import React, { Fragment } from 'react';
+import { Menu, Transition } from '@headlessui/react';
+import { HiDotsVertical } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
+import { FaRegTrashAlt } from 'react-icons/fa';
+import { MdContentCopy, MdRemoveRedEye } from 'react-icons/md';
+import { useDuplicateTaskMutation, useTrashTastMutation } from '../../redux/slices/api/taskApiSlice';
 
-const CustomTransition = ({ children }) => (
-  <Transition
-    as={Fragment}
-    enter='transition ease-out duration-100'
-    enterFrom='transform opacity-0 scale-95'
-    enterTo='transform opacity-100 scale-100'
-    leave='transition ease-in duration-75'
-    leaveFrom='transform opacity-100 scale-100'
-    leaveTo='transform opacity-0 scale-95'
-  >
-    {children}
-  </Transition>
-);
+const TaskDialog = ({ task }) => {
+  const [duplicateTask] = useDuplicateTaskMutation();
+  const [trashTask] = useTrashTastMutation();
 
-const ChangeTaskActions = ({ _id, stage }) => {
-  const items = [
-    { label: "To-Do", stage: "todo", icon: <TaskColor className='bg-blue-600' />, onClick: () => toast.info("Change stage not implemented") },
-    { label: "In Progress", stage: "in progress", icon: <TaskColor className='bg-yellow-600' />, onClick: () => toast.info("Change stage not implemented") },
-    { label: "Completed", stage: "completed", icon: <TaskColor className='bg-green-600' />, onClick: () => toast.info("Change stage not implemented") },
-  ];
+  const handleDuplicate = async () => {
+    if (window.confirm('Duplicate this task?')) {
+      try {
+        await duplicateTask(task._id).unwrap();
+        alert('Task duplicated');
+      } catch (error) {
+        alert(error?.data?.message || 'Failed to duplicate');
+      }
+    }
+  };
+
+  const handleTrash = async () => {
+    if (window.confirm('Move this task to trash?')) {
+      try {
+        await trashTask({ id: task._id }).unwrap();
+        alert('Task moved to trash');
+      } catch (error) {
+        alert(error?.data?.message || 'Failed to trash task');
+      }
+    }
+  };
 
   return (
-    <Menu as='div' className='relative inline-block text-left w-full'>
-      <Menu.Button className="inline-flex w-full items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-        <FaExchangeAlt />
-        <span>Change Task</span>
-      </Menu.Button>
-      <CustomTransition>
-        <Menu.Items className='absolute p-4 left-0 mt-2 w-40 divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none'>
-          <div className='px-1 py-1 space-y-2'>
-            {items.map((el) => (
-              <Menu.Item key={el.label} disabled={stage === el.stage}>
-                {({ active }) => (
-                  <button
-                    disabled={stage === el.stage}
-                    onClick={el.onClick}
-                    className={clsx(
-                      active ? "bg-gray-200 text-gray-900" : "text-gray-900",
-                      "group flex gap-2 w-full items-center rounded-md px-2 py-2 text-sm disabled:opacity-50"
-                    )}
-                  >
-                    {el.icon}
-                    {el.label}
-                  </button>
-                )}
-              </Menu.Item>
-            ))}
+    <Menu as="div" className="relative inline-block text-left">
+      <div>
+        <Menu.Button className="inline-flex w-full justify-center rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
+          <HiDotsVertical className="h-5 w-5" aria-hidden="true" />
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-50">
+          <div className="px-1 py-1">
+            <Menu.Item>
+              {({ active }) => (
+                <Link
+                  to={`/task/${task._id}`}
+                  className={`${
+                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                >
+                  <MdRemoveRedEye className="mr-2 h-5 w-5" aria-hidden="true" />
+                  View Task
+                </Link>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  onClick={handleDuplicate}
+                  className={`${
+                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                >
+                  <MdContentCopy className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Duplicate
+                </button>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  onClick={handleTrash}
+                  className={`${
+                    active ? 'bg-red-500 text-white' : 'text-gray-900'
+                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                >
+                  <FaRegTrashAlt className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Move to Trash
+                </button>
+              )}
+            </Menu.Item>
           </div>
         </Menu.Items>
-      </CustomTransition>
+      </Transition>
     </Menu>
   );
 };
 
-export default function TaskDialog({ task }) {
-  const { user } = useSelector((state) => state.auth);
-  const [open, setOpen] = useState(false);          // для AddSubTask
-  const [openEdit, setOpenEdit] = useState(false);  // для AddTask
-  const [openDialog, setOpenDialog] = useState(false); // для подтверждения удаления
-
-  const navigate = useNavigate();
-
-  const deleteHandler = () => {
-    toast.success("Task deleted (demo)");
-    setOpenDialog(false);
-  };
-
-  const duplicateHanlder = () => {
-    toast.success("Task duplicated (demo)");
-  };
-
-  const items = [
-    {
-      label: "Open Task",
-      icon: <AiTwotoneFolderOpen className='mr-2 h-5 w-5' aria-hidden='true' />,
-      onClick: () => navigate(`/task/${task._id}`),
-    },
-    {
-      label: "Edit",
-      icon: <MdOutlineEdit className='mr-2 h-5 w-5' aria-hidden='true' />,
-      onClick: () => setOpenEdit(true),
-    },
-    {
-      label: "Add Sub-Task",
-      icon: <MdAdd className='mr-2 h-5 w-5' aria-hidden='true' />,
-      onClick: () => setOpen(true),
-    },
-    {
-      label: "Duplicate",
-      icon: <HiDuplicate className='mr-2 h-5 w-5' aria-hidden='true' />,
-      onClick: duplicateHanlder,
-    },
-  ];
-
-  return (
-    <>
-      <div className=''>
-        <Menu as='div' className='relative inline-block text-left'>
-          <Menu.Button className='inline-flex w-full justify-center rounded-md px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300'>
-            <BsThreeDots />
-          </Menu.Button>
-
-          <CustomTransition>
-            <Menu.Items className='absolute p-4 right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none'>
-              <div className='px-1 py-1 space-y-2'>
-                {items.map((el) => (
-                  <Menu.Item key={el.label}>
-                    {({ active }) => (
-                      <button
-                        onClick={el.onClick}
-                        className={`${
-                          active ? "bg-blue-500 text-white" : "text-gray-900"
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        {el.icon}
-                        {el.label}
-                      </button>
-                    )}
-                  </Menu.Item>
-                ))}
-              </div>
-
-              <div className='px-1 py-1'>
-                <Menu.Item>
-                  <ChangeTaskActions _id={task._id} stage={task.stage} />
-                </Menu.Item>
-              </div>
-
-              <div className='px-1 py-1'>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => setOpenDialog(true)}
-                      className={`${
-                        active ? "bg-red-100 text-red-900" : "text-red-900"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    >
-                      <RiDeleteBin6Line
-                        className='mr-2 h-5 w-5 text-red-600'
-                        aria-hidden='true'
-                      />
-                      Delete
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-            </Menu.Items>
-          </CustomTransition>
-        </Menu>
-      </div>
-
-      <AddTask
-        open={openEdit}
-        setOpen={setOpenEdit}
-        task={task}
-        key={new Date().getTime()}
-      />
-      <AddSubTask open={open} setOpen={setOpen} id={task._id} />
-
-      <Dialogs
-        open={openDialog}
-        setOpen={setOpenDialog}
-        onClick={deleteHandler}
-        type="delete"
-        msg="Are you sure you want to delete this task?"
-      />
-    </>
-  );
-}
+export default TaskDialog;

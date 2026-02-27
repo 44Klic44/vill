@@ -1,17 +1,16 @@
 import clsx from "clsx";
 import React, { useState } from "react";
 import {
-  MdAttachFile,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { BGS, PRIOTITYSTYELS, TASK_TYPE, formatDate } from "../utils";
-import TaskDialog from "./task/TaskDialog";
+import { BGS, PRIOTITYSTYELS, TASK_TYPE, formatDate } from "../utils"; // подняться на уровень выше в src/utils
+import TaskDialog from "./task/TaskDialog"; // в папку task
 import { BiMessageAltDetail } from "react-icons/bi";
 import { FaList } from "react-icons/fa";
-import UserInfo from "./UserInfo";
+import UserInfo from "./UserInfo"; // если UserInfo лежит в src/components/UserInfo.jsx
 import { IoMdAdd } from "react-icons/io";
 import AddSubTask from "./task/AddSubTask";
 
@@ -26,15 +25,10 @@ const TaskCard = ({ task }) => {
   const [open, setOpen] = useState(false);
 
   const activities = task?.activities?.length ?? 0;
-  const assets = task?.assets?.length ?? 0;
   const subTasks = task?.subTasks?.length ?? 0;
-
-  // Логируем team для отладки (можно убрать позже)
-  console.log("Task team:", task?.team);
 
   return (
     <div className="w-full h-fit bg-white dark:bg-[#1f1f1f] shadow-md p-4 rounded">
-      {/* Верхняя часть: приоритет + меню */}
       <div className="w-full flex justify-between">
         <div
           className={clsx(
@@ -48,25 +42,17 @@ const TaskCard = ({ task }) => {
         <TaskDialog task={task} />
       </div>
 
-      {/* Заголовок и индикатор стадии */}
       <div className="flex items-center gap-2 mt-2">
-        <div
-          className={clsx("w-4 h-4 rounded-full", TASK_TYPE[task?.stage])}
-        />
-        <h4 className="line-clamp-1 text-black dark:text-white">
-          {task?.title}
-        </h4>
+        <div className={clsx("w-4 h-4 rounded-full", TASK_TYPE[task?.stage])} />
+        <h4 className="line-clamp-1 text-black dark:text-white">{task?.title}</h4>
       </div>
 
-      {/* Дата */}
       <span className="text-sm text-gray-600 dark:text-gray-400">
         {formatDate(new Date(task?.date))}
       </span>
 
-      {/* Разделитель */}
       <div className="w-full border-t border-gray-200 dark:border-gray-700 my-2" />
 
-      {/* Нижняя часть: иконки и аватарки */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
           <div className="flex gap-1 items-center text-sm text-gray-600">
@@ -74,16 +60,11 @@ const TaskCard = ({ task }) => {
             <span>{activities}</span>
           </div>
           <div className="flex gap-1 items-center text-sm text-gray-600">
-            <MdAttachFile />
-            <span>{assets}</span>
-          </div>
-          <div className="flex gap-1 items-center text-sm text-gray-600">
             <FaList />
             <span>{subTasks}</span>
           </div>
         </div>
 
-        {/* Аватарки участников */}
         <div className="flex flex-row-reverse">
           {task?.team?.length > 0 ? (
             task.team.map((member, index) => (
@@ -94,18 +75,13 @@ const TaskCard = ({ task }) => {
                   BGS[index % BGS.length]
                 )}
               >
-                {/* Передаём объект пользователя напрямую */}
                 <UserInfo user={member} />
               </div>
             ))
-          ) : (
-            // Если команды нет, можно ничего не рендерить или показать заглушку
-            null
-          )}
+          ) : null}
         </div>
       </div>
 
-      {/* Блок подзадачи (первая подзадача, если есть) */}
       {task?.subTasks?.length > 0 ? (
         <div className="py-4 border-t border-gray-200 dark:border-gray-700">
           <h5 className="text-base line-clamp-1 text-black dark:text-gray-400">
@@ -128,7 +104,6 @@ const TaskCard = ({ task }) => {
         </div>
       )}
 
-      {/* Кнопка добавления подзадачи */}
       <div className="w-full pb-2">
         <button
           onClick={() => setOpen(true)}
@@ -139,7 +114,6 @@ const TaskCard = ({ task }) => {
         </button>
       </div>
 
-      {/* Компонент добавления подзадачи */}
       <AddSubTask open={open} setOpen={setOpen} id={task._id} />
     </div>
   );
