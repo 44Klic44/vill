@@ -30,6 +30,7 @@ const Tasks = () => {
   const { status } = useParams();
   const [selected, setSelected] = useState(0);
   const [open, setOpen] = useState(false);
+  const [initialStage, setInitialStage] = useState('todo');
 
   const stageFilter = status
     ? status === 'in-progress'
@@ -37,13 +38,11 @@ const Tasks = () => {
       : status
     : '';
 
-  // Выполняем запрос
   const {
     data,
     isLoading,
     isError,
     error,
-    isSuccess,
     refetch
   } = useGetAllTaskQuery({
     strQuery: stageFilter,
@@ -51,36 +50,12 @@ const Tasks = () => {
     search: '',
   });
 
-  // Логируем всё, что происходит с запросом
-  useEffect(() => {
-    console.log('=== Tasks Component Debug ===');
-    console.log('Status from URL:', status);
-    console.log('Stage filter sent to API:', stageFilter);
-    console.log('isLoading:', isLoading);
-    console.log('isSuccess:', isSuccess);
-    console.log('isError:', isError);
-    
-    if (isSuccess && data) {
-      console.log('API Response (full):', data);
-      console.log('Tasks array:', data.tasks);
-      console.log('Number of tasks:', data.tasks?.length);
-      
-      // Если задачи есть, покажем первую для примера
-      if (data.tasks?.length > 0) {
-        console.log('First task:', data.tasks[0]);
-      } else {
-        console.warn('Tasks array is empty. No tasks match the filter.');
-      }
-    }
-    
-    if (isError) {
-      console.error('Error details:', error);
-    }
-  }, [isLoading, isSuccess, isError, data, error, status, stageFilter]);
+  const handleAddTask = (stage) => {
+    setInitialStage(stage);
+    setOpen(true);
+  };
 
-  // Показываем загрузку
   if (isLoading) {
-    console.log('Rendering: Loading spinner');
     return (
       <div className='py-10'>
         <Loading />
@@ -88,9 +63,7 @@ const Tasks = () => {
     );
   }
 
-  // Показываем ошибку
   if (isError) {
-    console.log('Rendering: Error message');
     return (
       <div className='text-red-500 p-4'>
         Ошибка загрузки задач: {error?.data?.message || error?.message || 'Неизвестная ошибка'}
@@ -98,18 +71,15 @@ const Tasks = () => {
     );
   }
 
-  // Получаем массив задач (на случай, если data или data.tasks undefined)
   const tasks = data?.tasks || [];
-  console.log('Rendering with tasks count:', tasks.length);
 
   return (
     <div className='w-full'>
-      {/* Заголовок и кнопка создания задачи */}
       <div className='flex items-center justify-between mb-4'>
         <Title title={status ? `${status} Tasks` : 'Tasks'} />
         {!status && (
           <Button
-            onClick={() => setOpen(true)}
+            onClick={() => handleAddTask('todo')}
             label='Create Task'
             icon={<IoMdAdd className='text-lg' />}
             className='flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md py-2 2xl:py-2.5'
@@ -121,9 +91,21 @@ const Tasks = () => {
 
       {!status && (
         <div className='w-full flex justify-between gap-4 md:gap-x-12 py-4'>
-          <TaskTitle label='To Do' className={TASK_TYPE.todo} />
-          <TaskTitle label='In Progress' className={TASK_TYPE['in progress']} />
-          <TaskTitle label='Completed' className={TASK_TYPE.completed} />
+          <TaskTitle
+            label='To Do'
+            className={TASK_TYPE.todo}
+            onAddClick={() => handleAddTask('todo')}
+          />
+          <TaskTitle
+            label='In Progress'
+            className={TASK_TYPE['in progress']}
+            onAddClick={() => handleAddTask('in progress')}
+          />
+          <TaskTitle
+            label='Completed'
+            className={TASK_TYPE.completed}
+            onAddClick={() => handleAddTask('completed')}
+          />
         </div>
       )}
 
@@ -133,7 +115,12 @@ const Tasks = () => {
         <Table tasks={tasks} />
       )}
 
-      <AddTask open={open} setOpen={setOpen} refetch={refetch} />
+      <AddTask
+        open={open}
+        setOpen={setOpen}
+        refetch={refetch}
+        initialStage={initialStage}
+      />
     </div>
   );
 };

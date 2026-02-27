@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useCreateTaskMutation } from '../../redux/slices/api/taskApiSlice';
-import UserList from './UserList'; // исправлено: тот же каталог
+import UserList from './UserList';
 
-const AddTask = ({ open, setOpen, refetch }) => {
+const AddTask = ({ open, setOpen, refetch, initialStage = 'todo' }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     priority: 'normal',
-    stage: 'todo',
+    stage: initialStage,
     date: new Date().toISOString().split('T')[0],
     team: [],
     links: '',
