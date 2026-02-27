@@ -26,7 +26,7 @@ const submitHandler = async (data) => {
   try {
     const result = await login(data).unwrap(); // ✅ добавляем unwrap
     console.log(result);
-    dispatch(setCredentials(result)); // ✅ было res, исправлено на result
+dispatch(setCredentials(result.user));
     navigate('/dashboard');
   } catch (error) {
     toast.error(error?.data?.message || error.message);
