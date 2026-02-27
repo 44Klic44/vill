@@ -1,198 +1,49 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import clsx from "clsx";
-import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-  MdKeyboardDoubleArrowUp,
-  MdAttachFile,
-  MdOutlineMessage,
-  MdChecklist,
-} from "react-icons/md";
-import { toast } from "sonner";
+import React from 'react';
+import TaskDialog from './TaskDialog';
+import { formatDate, PRIOTITYSTYELS, TASK_TYPE } from '../../utils';
+import clsx from 'clsx';
 
-// Импорты из проекта
-import {
-  BGS,
-  PRIOTITYSTYELS,
-  TASK_TYPE,
-  formatDate,
-} from "../../utils/index";
-import UserInfo from "../UserInfo";
-import Button from "../Button";
-import TaskColor from "./TaskColor";
-import Dialogs from "./Dialogs";
-import AddTask from "./AddTask";
-
-const TaskAssets = ({ activities, subTasks, assets }) => (
-  <div className="flex items-center gap-2 text-sm text-gray-600">
-    <div className="flex items-center gap-1">
-      <MdOutlineMessage />
-      <span>{activities}</span>
-    </div>
-    <div className="flex items-center gap-1">
-      <MdAttachFile />
-      <span>{assets}</span>
-    </div>
-    <div className="flex items-center gap-1">
-      <MdChecklist />
-      <span>{subTasks}</span>
-    </div>
-  </div>
-);
-
-const ICONS = {
-  high: <MdKeyboardDoubleArrowUp />,
-  medium: <MdKeyboardArrowUp />,
-  low: <MdKeyboardArrowDown />,
-};
-
-const Table = ({ tasks }) => {
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [openEdit, setOpenEdit] = useState(false);
-
-  const deleteClicks = (id) => {
-    setSelected(id);
-    setOpenDialog(true);
-  };
-
-  const editClickHandler = (el) => {
-    setSelected(el);
-    setOpenEdit(true);
-  };
-
-  const deleteHandler = async () => {
-    try {
-      toast.success("Task deleted successfully (demo)");
-      setTimeout(() => {
-        setOpenDialog(false);
-      }, 500);
-    } catch (err) {
-      console.log(err);
-      toast.error(err?.data?.message || err.error);
-    }
-  };
-
-  const TableHeader = () => (
-    <thead className='w-full border-b border-gray-300 dark:border-gray-600'>
-      <tr className='w-full text-black dark:text-white text-left'>
-        <th className='py-2'>Task Title</th>
-        <th className='py-2'>Priority</th>
-        <th className='py-2 line-clamp-1'>Created At</th>
-        <th className='py-2'>Assets</th>
-        <th className='py-2'>Team</th>
-        <th className='py-2 text-right'>Actions</th>
-      </tr>
-    </thead>
-  );
-
-  const TableRow = ({ task }) => {
-    // task.team уже содержит массив объектов пользователей (благодаря populate)
-    const teamMembers = task?.team || [];
-
-    return (
-      <tr className='border-b border-gray-200 text-gray-600 hover:bg-gray-300/10'>
-        <td className='py-2'>
-          <Link to={`/task/${task._id}`}>
-            <div className='flex items-center gap-2'>
-              <TaskColor className={TASK_TYPE[task.stage]} />
-              <p className='w-full line-clamp-2 text-base text-black dark:text-white'>
-                {task?.title}
-              </p>
-            </div>
-          </Link>
-        </td>
-
-        <td className='py-2'>
-          <div className={"flex gap-1 items-center"}>
-            <span className={clsx("text-lg", PRIOTITYSTYELS[task?.priority])}>
-              {ICONS[task?.priority]}
-            </span>
-            <span className='capitalize line-clamp-1'>
-              {task?.priority} Priority
-            </span>
-          </div>
-        </td>
-
-        <td className='py-2'>
-          <span className='text-sm text-gray-600 dark:text-gray-400'>
-            {formatDate(new Date(task?.date))}
-          </span>
-        </td>
-
-        <td className='py-2'>
-          <TaskAssets
-            activities={task?.activities?.length ?? 0}
-            subTasks={task?.subTasks?.length ?? 0}
-            assets={task?.assets?.length ?? 0}
-          />
-        </td>
-
-        <td className='py-2'>
-          <div className='flex'>
-            {teamMembers.map((member, index) => (
-              <div
-                key={member._id || index}
-                className={clsx(
-                  "w-7 h-7 rounded-full text-white flex items-center justify-center text-sm -mr-1",
-                  BGS[index % BGS.length]
-                )}
-              >
-                <UserInfo user={member} />
-              </div>
-            ))}
-          </div>
-        </td>
-
-        <td className='py-2 flex gap-2 md:gap-4 justify-end'>
-          <Button
-            className='text-blue-600 hover:text-blue-500 sm:px-0 text-sm md:text-base'
-            label='Edit'
-            type='button'
-            onClick={() => editClickHandler(task)}
-          />
-          <Button
-            className='text-red-700 hover:text-red-500 sm:px-0 text-sm md:text-base'
-            label='Delete'
-            type='button'
-            onClick={() => deleteClicks(task._id)}
-          />
-        </td>
-      </tr>
-    );
-  };
-
+const Table = ({ tasks, refetch }) => {
   return (
-    <>
-      <div className='bg-white px-2 md:px-4 pt-4 pb-9 shadow-md rounded'>
-        <div className='overflow-x-auto'>
-          <table className='w-full'>
-            <TableHeader />
-            <tbody>
-              {tasks?.map((task, index) => (
-                <TableRow key={task._id || index} task={task} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+    <div className="bg-white dark:bg-[#1f1f1f] px-2 md:px-6 py-4 shadow-md rounded">
+      <div className="overflow-x-auto">
+        <table className="w-full mb-5">
+          <thead className='border-b border-gray-300 dark:border-gray-600'>
+            <tr className='text-black dark:text-white text-left'>
+              <th className='py-2'>Task Title</th>
+              <th className='py-2'>Priority</th>
+              <th className='py-2'>Stage</th>
+              <th className='py-2 line-clamp-1'>Due Date</th>
+              <th className='py-2 text-right'>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map(task => (
+              <tr key={task._id} className='border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-400/10'>
+                <td className='py-2'>
+                  <div className='flex items-center gap-2'>
+                    <div className={clsx('w-3 h-3 rounded-full', TASK_TYPE[task.stage])} />
+                    <p className='line-clamp-2 text-base text-black dark:text-gray-400'>
+                      {task.title}
+                    </p>
+                  </div>
+                </td>
+                <td className='py-2 capitalize'>
+                  <span className={clsx('px-2 py-1 rounded-full text-xs font-semibold', PRIOTITYSTYELS[task.priority])}>
+                    {task.priority}
+                  </span>
+                </td>
+                <td className='py-2 capitalize'>{task.stage}</td>
+                <td className='py-2 text-sm'>{formatDate(new Date(task.date))}</td>
+                <td className='py-2 flex gap-1 justify-end'>
+                  <TaskDialog task={task} refetch={refetch} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-
-      <Dialogs
-        open={openDialog}
-        setOpen={setOpenDialog}
-        onClick={deleteHandler}
-        type="delete"
-        msg="Are you sure you want to delete this task?"
-      />
-
-      <AddTask
-        open={openEdit}
-        setOpen={setOpenEdit}
-        task={selected}
-        key={new Date().getTime()}
-      />
-    </>
+    </div>
   );
 };
 

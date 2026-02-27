@@ -1,18 +1,14 @@
-import clsx from "clsx";
-import React, { useState } from "react";
-import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-  MdKeyboardDoubleArrowUp,
-} from "react-icons/md";
-import { useSelector } from "react-redux";
-import { BGS, PRIOTITYSTYELS, TASK_TYPE, formatDate } from "../utils"; // подняться на уровень выше в src/utils
-import TaskDialog from "./task/TaskDialog"; // в папку task
-import { BiMessageAltDetail } from "react-icons/bi";
-import { FaList } from "react-icons/fa";
-import UserInfo from "./UserInfo"; // если UserInfo лежит в src/components/UserInfo.jsx
-import { IoMdAdd } from "react-icons/io";
-import AddSubTask from "./task/AddSubTask";
+import React, { useState } from 'react';
+import clsx from 'clsx';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdKeyboardDoubleArrowUp } from 'react-icons/md';
+import { useSelector } from 'react-redux';
+import { BGS, PRIOTITYSTYELS, TASK_TYPE, formatDate } from '../utils';
+import TaskDialog from './task/TaskDialog';
+import { BiMessageAltDetail } from 'react-icons/bi';
+import { FaList } from 'react-icons/fa';
+import UserInfo from './UserInfo';
+import { IoMdAdd } from 'react-icons/io';
+import AddSubTask from './task/AddSubTask';
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -20,7 +16,7 @@ const ICONS = {
   low: <MdKeyboardArrowDown />,
 };
 
-const TaskCard = ({ task }) => {
+const TaskCard = ({ task, refetch }) => {
   const { user } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
 
@@ -30,16 +26,11 @@ const TaskCard = ({ task }) => {
   return (
     <div className="w-full h-fit bg-white dark:bg-[#1f1f1f] shadow-md p-4 rounded">
       <div className="w-full flex justify-between">
-        <div
-          className={clsx(
-            "flex flex-1 gap-1 items-center text-sm font-medium",
-            PRIOTITYSTYELS[task?.priority]
-          )}
-        >
+        <div className={clsx("flex flex-1 gap-1 items-center text-sm font-medium", PRIOTITYSTYELS[task?.priority])}>
           <span className="text-lg">{ICONS[task?.priority]}</span>
           <span className="uppercase">{task?.priority} Priority</span>
         </div>
-        <TaskDialog task={task} />
+        <TaskDialog task={task} refetch={refetch} />
       </div>
 
       <div className="flex items-center gap-2 mt-2">

@@ -110,10 +110,10 @@ const Tasks = () => {
       )}
 
       {selected === 0 ? (
-        <BoardView tasks={tasks} />
-      ) : (
-        <Table tasks={tasks} />
-      )}
+  <BoardView tasks={tasks} refetch={refetch} />
+) : (
+  <Table tasks={tasks} refetch={refetch} />
+)}
 
       <AddTask
         open={open}
