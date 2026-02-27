@@ -1,7 +1,7 @@
 import React from "react";
-import ModalWrapper from "../ModalWrapper"; // исправлено: выходим из папки task
+import ModalWrapper from "../ModalWrapper"; 
 import { Dialog } from "@headlessui/react";
-import Button from "../Button"; // исправлено: выходим из папки task
+import Button from "../Button"; 
 
 const ViewNotification = ({ open, setOpen, el }) => {
   if (!el) return null;

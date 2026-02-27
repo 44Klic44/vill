@@ -25,13 +25,13 @@ const AddUser = ({ open, setOpen, userData }) => {
   const [addNewUser, { isLoading }] = useRegisterMutation();
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
-  // ✅ ВАЖНО — данные подтягиваются при открытии модалки
+
 useEffect(() => {
   if (!open) return;
 
   console.log("🧠 OPEN AddUser, userData:", userData);
 
-  const currentUser = userData?.user || userData || null; // на всякий случай, если приходит напрямую объект пользователя
+  const currentUser = userData?.user || userData || null; 
 
   if (currentUser) {
     reset({
@@ -56,17 +56,17 @@ useEffect(() => {
   const handleOnSubmit = async (data) => {
     try {
       if (userData) {
-        // ✅ Обновление профиля (без передачи _id)
+ 
         const res = await updateUser(data).unwrap();
 
         toast.success(res?.message || "Profile updated successfully");
 
-        // ✅ Если редактируем себя — обновляем auth state
+   
         if (currentUser?._id === userData?._id) {
           dispatch(setCredentials(res?.user));
         }
       } else {
-        // Создание нового пользователя
+     
         await addNewUser({
           ...data,
           password: data.email,
