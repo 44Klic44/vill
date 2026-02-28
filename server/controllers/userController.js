@@ -3,23 +3,18 @@ import Notice from "../models/notis.js";
 import User from "../models/user.js";
 import { createJWT } from "../utils/index.js";
 import jwt from "jsonwebtoken";
-console.log('✅ userController.js загружен');
 
 // POST request - login user
 const loginUser = asyncHandler(async (req, res) => {
-   console.log('🔥🔥🔥 loginUserTest ВЫЗВАН');
   const { email, password } = req.body;
-  console.log(`🔐 Попытка входа для email: ${email}`); // Лог 1
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    console.log(`❌ Пользователь не найден: ${email}`); // Лог 2
     return res.status(401).json({ status: false, message: "Invalid email or password." });
   }
 
   if (!user?.isActive) {
-    console.log(`⛔ Учётная запись неактивна: ${email}`); // Лог 3
     return res.status(401).json({
       status: false,
       message: "User account has been deactivated, contact the administrator",
@@ -27,29 +22,21 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   const isMatch = await user.matchPassword(password);
-  console.log(`🔑 Совпадение пароля: ${isMatch}`); // Лог 4
 
   if (user && isMatch) {
-    console.log(`✅ Успешный вход, user._id: ${user._id}`); // Лог 5
 
-    // Устанавливаем httpOnly куку с токеном
     createJWT(res, user._id);
-    console.log(`🍪 Кука createJWT вызвана`); // Лог 6
 
-    // Генерируем токен для возврата в теле ответа
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    console.log(`🔑 Сгенерирован токен (первые 20 символов): ${token.substring(0,20)}...`); // Лог 7
 
     // Удаляем пароль из объекта пользователя перед отправкой
     user.password = undefined;
 
     // Отправляем один ответ с пользователем и токеном
-    console.log(`📤 Отправка ответа с токеном`); // Лог 8
     res.status(200).json({ user, token });
   } else {
-    console.log(`❌ Неверный пароль для: ${email}`); // Лог 9
     return res.status(401).json({ status: false, message: "Invalid email or password" });
   }
 });
@@ -96,21 +83,7 @@ const logoutUser = (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-// @GET -   Get user profile
-// const getUserProfile = asyncHandler(async (req, res) => {
-//   const { userId } = req.user;
 
-//   const user = await User.findById(userId);
-
-//   user.password = undefined;
-
-//   if (user) {
-//     res.json({ ...user });
-//   } else {
-//     res.status(404);
-//     throw new Error("User not found");
-//   }
-// });
 
 const getTeamList = asyncHandler(async (req, res) => {
   const { search } = req.query;
@@ -145,19 +118,15 @@ const getTeamList = asyncHandler(async (req, res) => {
 
     console.log('📦 Найдено уведомлений:', notices.length);
     if (notices.length === 0) {
-      // Для отладки: попробуем найти по строке
       const noticesAsString = await Notice.find({ team: req.user.userId.toString() });
-      console.log('🧪 Поиск по строке:', noticesAsString.length);
     }
 
     res.json(notices);
   } catch (error) {
-    console.error('❌ Ошибка:', error);
     res.status(500).json({ message: error.message });
   }
 });
 
-// @GET  - get user task status
 const getUserTaskStatus = asyncHandler(async (req, res) => {
   const tasks = await User.find()
     .populate("tasks", "title stage")
@@ -193,9 +162,7 @@ const markNotificationRead = asyncHandler(async (req, res) => {
 
 // PUT - Update user profile
 const updateUserProfile = asyncHandler(async (req, res) => {
-  console.log('🔥 updateUserProfile ВЫЗВАН');
-  console.log('👉 req.user:', req.user); // должен быть текущий пользователь из токена
-  console.log('👉 req.body:', req.body); // какие поля приходят
+
   const { userId, isAdmin } = req.user;
   const { _id } = req.body;
 
@@ -210,7 +177,6 @@ const user = await User.findById(req.user.userId);
 
   if (user) {
     user.name = req.body.name || user.name;
-    // user.email = req.body.email || user.email;
     user.title = req.body.title || user.title;
     user.role = req.body.role || user.role;
 
@@ -230,10 +196,7 @@ const user = await User.findById(req.user.userId);
 
 // PUT - active/disactivate user profile
  const activateUserProfile = asyncHandler(async (req, res) => {
-  console.log('🔥 activateUserProfile ВЫЗВАН');
-  console.log('👉 req.user:', req.user);
-  console.log('👉 req.params:', req.params); // должен быть id из URL
-  console.log('👉 req.body:', req.body);
+
   const { id } = req.params;
 
   const user = await User.findById(id);
@@ -257,9 +220,7 @@ const user = await User.findById(req.user.userId);
 });
 
 const changeUserPassword = asyncHandler(async (req, res) => {
-  console.log("===== CHANGE PASSWORD BACKEND =====");
-  console.log("req.body:", req.body);
-  console.log("req.user:", req.user);
+
 
   const { oldPassword, password } = req.body;
 
@@ -288,7 +249,7 @@ const changeUserPassword = asyncHandler(async (req, res) => {
     });
   }
 
-  user.password = password; // ✅ теперь пароль присваивается правильно
+  user.password = password; 
 
   await user.save();
 

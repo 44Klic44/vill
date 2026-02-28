@@ -93,7 +93,7 @@ const TaskDialog = ({ task, refetch }) => {
                   </button>
                 )}
               </Menu.Item>
-              <Menu.Item>
+              {/* <Menu.Item>
                 {({ active }) => (
                   <button
                     onClick={handleDuplicate}
@@ -105,7 +105,7 @@ const TaskDialog = ({ task, refetch }) => {
                     Duplicate
                   </button>
                 )}
-              </Menu.Item>
+              </Menu.Item> */}
 
               {/* Подменю изменения статуса */}
               <Menu.Item>
