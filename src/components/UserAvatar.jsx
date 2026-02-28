@@ -17,7 +17,6 @@ const UserAvatar = () => {
   const [open, setOpen] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
   const { user } = useSelector((state) => state.auth);
-  console.log("CURRENT USER:", user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutUser] = useLogoutMutation();

@@ -43,3 +43,4 @@ app.use("/api", routes);
 app.use(routeNotFound);
 app.use(errorHandler);
 
+app.listen(PORT, () => {});
