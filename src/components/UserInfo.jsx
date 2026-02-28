@@ -3,7 +3,6 @@ import { Fragment } from "react";
 import { getInitials } from "../utils";
 
 export default function UserInfo({ user }) {
-  // Если user не объект или нет name – показываем заглушку
   if (!user || typeof user !== 'object' || !user.name) {
     return (
       <div className="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm">
@@ -29,8 +28,8 @@ export default function UserInfo({ user }) {
               leaveFrom='opacity-100 translate-y-0'
               leaveTo='opacity-0 translate-y-1'
             >
-              <Popover.Panel className='absolute left-1/2 z-10 mt-3 w-80 max-w-sm -translate-x-1/2 transform px-4 sm:px-0'>
-                <div className='flex items-center gap-4 rounded-lg shadow-lg bg-white p-8'>
+              <Popover.Panel className='absolute z-10 mt-3 w-80 max-w-[90vw] px-4 sm:px-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2'>
+                <div className='flex items-center gap-4 rounded-lg shadow-lg bg-white p-2'>
                   <div className='w-16 h-16 bg-blue-600 rounded-full text-white flex items-center justify-center text-2xl'>
                     <span className='text-center font-bold'>
                       {getInitials(user.name)}

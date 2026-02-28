@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MdAdminPanelSettings,
   MdKeyboardArrowDown,
@@ -11,13 +11,13 @@ import { FaArrowsToDot } from "react-icons/fa6";
 import moment from "moment";
 import "moment/locale/ru";
 import clsx from "clsx";
-
+import { RiProgress2Line } from "react-icons/ri";
 import { useGetDasboardStatsQuery } from "../redux/slices/api/taskApiSlice";
 import { Chart } from "../components/Chart";
 import UserInfo from "../components/UserInfo";
 
 // ------------------------------------------------------------
-// Константы для стилей
+// Константы и утилиты
 // ------------------------------------------------------------
 const TASK_TYPE = {
   todo: "bg-red-500",
@@ -29,7 +29,7 @@ const PRIORITY_STYLES = {
   high: "text-red-600",
   medium: "text-yellow-600",
   low: "text-green-600",
-  normal: "text-gray-600", // добавлено
+  normal: "text-gray-600",
 };
 
 const BGS = [
@@ -49,6 +49,19 @@ const getInitials = (name) => {
     .join("")
     .toUpperCase()
     .slice(0, 2);
+};
+
+// Хук для определения мобильного устройства
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    setMatches(media.matches);
+    const listener = (e) => setMatches(e.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, [query]);
+  return matches;
 };
 
 // ------------------------------------------------------------
@@ -73,7 +86,84 @@ const Card = ({ label, count, bg, icon }) => (
 );
 
 // ------------------------------------------------------------
-// Таблица задач
+// Мобильная карточка задачи
+// ------------------------------------------------------------
+const MobileTaskCard = ({ task }) => {
+  const ICONS = {
+    high: <MdKeyboardDoubleArrowUp />,
+    medium: <MdKeyboardArrowUp />,
+    low: <MdKeyboardArrowDown />,
+    normal: <MdKeyboardArrowRight />,
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 p-3 rounded shadow flex flex-col gap-2">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <div className={clsx("w-3 h-3 rounded-full", TASK_TYPE[task.stage])} />
+            <p className="font-medium line-clamp-2">{task.title}</p>
+          </div>
+          <div className="flex items-center gap-2 mt-1 text-sm">
+            <span className={clsx("flex items-center gap-1", PRIORITY_STYLES[task.priority])}>
+              {ICONS[task.priority]}
+              <span className="capitalize">{task.priority}</span>
+            </span>
+            <span className="text-gray-500">•</span>
+            <span className="text-gray-500">{moment(task.createdAt).fromNow()}</span>
+          </div>
+        </div>
+        {/* Аватарки команды (первые 3) */}
+        {task.team?.length > 0 && (
+          <div className="flex -space-x-2">
+            {task.team.slice(0, 3).map((member) => (
+              <div
+                key={member._id}
+                className="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] border-2 border-white"
+              >
+                <UserInfo user={member} />
+              </div>
+            ))}
+            {task.team.length > 3 && (
+              <div className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-[10px] border-2 border-white">
+                +{task.team.length - 3}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ------------------------------------------------------------
+// Мобильная карточка пользователя
+// ------------------------------------------------------------
+const MobileUserCard = ({ user }) => (
+  <div className="bg-white dark:bg-gray-800 p-3 rounded shadow flex items-center gap-3">
+    <div className="w-10 h-10 rounded-full bg-violet-700 text-white flex items-center justify-center text-sm font-bold">
+      {getInitials(user.name)}
+    </div>
+    <div className="flex-1">
+      <p className="font-medium">{user.name}</p>
+      <p className="text-xs text-gray-500">{user.role}</p>
+      <div className="flex items-center gap-2 mt-1">
+        <span
+          className={clsx(
+            "px-2 py-0.5 rounded-full text-xs",
+            user.isActive ? "bg-blue-200" : "bg-yellow-100"
+          )}
+        >
+          {user.isActive ? "Active" : "Disabled"}
+        </span>
+        <span className="text-xs text-gray-500">{moment(user.createdAt).fromNow()}</span>
+      </div>
+    </div>
+  </div>
+);
+
+// ------------------------------------------------------------
+// Таблица задач (десктоп)
 // ------------------------------------------------------------
 const TaskTable = ({ tasks, users }) => {
   const ICONS = {
@@ -95,13 +185,12 @@ const TaskTable = ({ tasks, users }) => {
   );
 
   const TableRow = ({ task }) => {
-    // Преобразуем ID пользователей в объекты, если task.team содержит ID
     const teamMembers = (task.team || [])
       .map((member) => {
         if (typeof member === "string") {
           return users?.find((u) => u._id === member);
         }
-        return member; // если уже объект
+        return member;
       })
       .filter(Boolean);
 
@@ -109,13 +198,10 @@ const TaskTable = ({ tasks, users }) => {
       <tr className="border-b border-gray-300 text-gray-600 hover:bg-gray-300/10">
         <td className="py-2">
           <div className="flex items-center gap-2">
-            <div
-              className={clsx("w-4 h-4 rounded-full", TASK_TYPE[task.stage])}
-            />
+            <div className={clsx("w-4 h-4 rounded-full", TASK_TYPE[task.stage])} />
             <p className="text-base text-black">{task.title}</p>
           </div>
         </td>
-
         <td className="py-2">
           <div className="flex gap-1 items-center">
             <span className={clsx("text-lg", PRIORITY_STYLES[task.priority])}>
@@ -124,7 +210,6 @@ const TaskTable = ({ tasks, users }) => {
             <span className="capitalize">{task.priority}</span>
           </div>
         </td>
-
         <td className="py-2">
           <div className="flex">
             {teamMembers.map((member, index) => (
@@ -140,7 +225,6 @@ const TaskTable = ({ tasks, users }) => {
             ))}
           </div>
         </td>
-
         <td className="py-2 hidden md:block">
           <span className="text-base text-gray-600">
             {moment(task.createdAt).fromNow()}
@@ -152,20 +236,22 @@ const TaskTable = ({ tasks, users }) => {
 
   return (
     <div className="w-full md:w-2/3 bg-white px-2 md:px-4 pt-4 pb-4 shadow-md rounded">
-      <table className="w-full">
-        <TableHeader />
-        <tbody>
-          {tasks?.map((task) => (
-            <TableRow key={task._id} task={task} />
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto" style={{ height: '77vh' }}>
+        <table className="w-full">
+          <TableHeader />
+          <tbody>
+            {tasks?.map((task) => (
+              <TableRow key={task._id} task={task} />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 // ------------------------------------------------------------
-// Таблица пользователей
+// Таблица пользователей (десктоп)
 // ------------------------------------------------------------
 const UserTable = ({ users }) => {
   const TableHeader = () => (
@@ -191,7 +277,6 @@ const UserTable = ({ users }) => {
           </div>
         </div>
       </td>
-
       <td>
         <p
           className={clsx(
@@ -202,7 +287,6 @@ const UserTable = ({ users }) => {
           {user?.isActive ? "Active" : "Disabled"}
         </p>
       </td>
-
       <td className="py-2 text-sm">
         {moment(user?.createdAt).fromNow()}
       </td>
@@ -211,14 +295,16 @@ const UserTable = ({ users }) => {
 
   return (
     <div className="w-full md:w-1/3 bg-white h-fit px-2 md:px-6 py-4 shadow-md rounded">
-      <table className="w-full mb-5">
-        <TableHeader />
-        <tbody>
-          {users?.map((user) => (
-            <TableRow key={user._id} user={user} />
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="w-full mb-5">
+          <TableHeader />
+          <tbody>
+            {users?.map((user) => (
+              <TableRow key={user._id} user={user} />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
@@ -228,19 +314,11 @@ const UserTable = ({ users }) => {
 // ------------------------------------------------------------
 const Dashboard = () => {
   const { data, isLoading, error } = useGetDasboardStatsQuery();
+  const isMobile = useMediaQuery('(max-width: 640px)');
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
-
-  // Для отладки – посмотрите в консоль, что приходит с сервера
-  useEffect(() => {
-    if (data) {
-      console.log("Dashboard data:", data);
-      console.log("last10Task:", data.last10Task);
-      console.log("users:", data.users);
-    }
-  }, [data]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading data</p>;
@@ -265,7 +343,7 @@ const Dashboard = () => {
       _id: "3",
       label: "TASK IN PROGRESS",
       total: totals["in progress"] || 0,
-      icon: <MdAdminPanelSettings />, // можно заменить на MdEditNote
+      icon: <RiProgress2Line/>,
       bg: "bg-[#f59e0b]",
     },
     {
@@ -296,8 +374,29 @@ const Dashboard = () => {
 
       {/* Таблицы задач и пользователей */}
       <div className="w-full flex flex-col md:flex-row gap-4 2xl:gap-10 py-8">
-        <TaskTable tasks={data.last10Task} users={data.users} />
-        <UserTable users={data.users} />
+        {isMobile ? (
+          // Мобильная версия: карточки
+          <>
+            <div className="w-full space-y-2">
+              <h3 className="text-lg font-semibold mb-2">Latest Tasks</h3>
+              {data.last10Task?.map(task => (
+                <MobileTaskCard key={task._id} task={task} />
+              ))}
+            </div>
+            <div className="w-full space-y-2 mt-4">
+              <h3 className="text-lg font-semibold mb-2">Team Members</h3>
+              {data.users?.map(user => (
+                <MobileUserCard key={user._id} user={user} />
+              ))}
+            </div>
+          </>
+        ) : (
+          // Десктопная версия: таблицы
+          <>
+            <TaskTable tasks={data.last10Task} users={data.users} />
+            <UserTable users={data.users} />
+          </>
+        )}
       </div>
     </div>
   );

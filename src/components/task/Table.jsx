@@ -6,7 +6,7 @@ import clsx from 'clsx';
 const Table = ({ tasks, refetch }) => {
   return (
     <div className="bg-white dark:bg-[#1f1f1f] px-2 md:px-6 py-4 shadow-md rounded">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto md:h-[77vh]">
         <table className="w-full mb-5">
           <thead className='border-b border-gray-300 dark:border-gray-600'>
             <tr className='text-black dark:text-white text-left'>
