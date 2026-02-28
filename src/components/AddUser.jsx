@@ -29,7 +29,6 @@ const AddUser = ({ open, setOpen, userData }) => {
 useEffect(() => {
   if (!open) return;
 
-  console.log("🧠 OPEN AddUser, userData:", userData);
 
   const currentUser = userData?.user || userData || null; 
 
@@ -77,7 +76,6 @@ useEffect(() => {
 
       setOpen(false);
     } catch (err) {
-      console.log("Update error:", err);
       toast.error(err?.data?.message || "Something went wrong");
     }
   };

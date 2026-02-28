@@ -16,9 +16,9 @@ import { useGetDasboardStatsQuery } from "../redux/slices/api/taskApiSlice";
 import { Chart } from "../components/Chart";
 import UserInfo from "../components/UserInfo";
 
-// ------------------------------------------------------------
+
 // Константы и утилиты
-// ------------------------------------------------------------
+
 const TASK_TYPE = {
   todo: "bg-red-500",
   "in progress": "bg-yellow-500",
@@ -64,9 +64,9 @@ const useMediaQuery = (query) => {
   return matches;
 };
 
-// ------------------------------------------------------------
+
 // Карточка статистики
-// ------------------------------------------------------------
+
 const Card = ({ label, count, bg, icon }) => (
   <div className="w-full h-32 bg-white p-5 shadow-md rounded-md flex items-center justify-between">
     <div className="h-full flex flex-1 flex-col justify-between">
@@ -85,9 +85,9 @@ const Card = ({ label, count, bg, icon }) => (
   </div>
 );
 
-// ------------------------------------------------------------
+
 // Мобильная карточка задачи
-// ------------------------------------------------------------
+
 const MobileTaskCard = ({ task }) => {
   const ICONS = {
     high: <MdKeyboardDoubleArrowUp />,
@@ -136,9 +136,9 @@ const MobileTaskCard = ({ task }) => {
   );
 };
 
-// ------------------------------------------------------------
+
 // Мобильная карточка пользователя
-// ------------------------------------------------------------
+
 const MobileUserCard = ({ user }) => (
   <div className="bg-white dark:bg-gray-800 p-3 rounded shadow flex items-center gap-3">
     <div className="w-10 h-10 rounded-full bg-violet-700 text-white flex items-center justify-center text-sm font-bold">
@@ -162,9 +162,9 @@ const MobileUserCard = ({ user }) => (
   </div>
 );
 
-// ------------------------------------------------------------
+
 // Таблица задач (десктоп)
-// ------------------------------------------------------------
+
 const TaskTable = ({ tasks, users }) => {
   const ICONS = {
     high: <MdKeyboardDoubleArrowUp />,
@@ -250,9 +250,9 @@ const TaskTable = ({ tasks, users }) => {
   );
 };
 
-// ------------------------------------------------------------
+
 // Таблица пользователей (десктоп)
-// ------------------------------------------------------------
+
 const UserTable = ({ users }) => {
   const TableHeader = () => (
     <thead className="border-b border-gray-300">
@@ -309,9 +309,9 @@ const UserTable = ({ users }) => {
   );
 };
 
-// ------------------------------------------------------------
+
 // Главный компонент Dashboard
-// ------------------------------------------------------------
+
 const Dashboard = () => {
   const { data, isLoading, error } = useGetDasboardStatsQuery();
   const isMobile = useMediaQuery('(max-width: 640px)');

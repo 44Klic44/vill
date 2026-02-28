@@ -109,14 +109,12 @@ const getTeamList = asyncHandler(async (req, res) => {
 // @GET  - get user notifications
  const getNotificationsList = asyncHandler(async (req, res) => {
   try {
-    console.log('🔍 req.user.userId =', req.user.userId);
-    console.log('🔍 Тип req.user.userId:', typeof req.user.userId);
+    
 
     const notices = await Notice.find({ team: req.user.userId })
       .populate('task', 'title')
       .sort({ createdAt: -1 });
 
-    console.log('📦 Найдено уведомлений:', notices.length);
     if (notices.length === 0) {
       const noticesAsString = await Notice.find({ team: req.user.userId.toString() });
     }
@@ -156,7 +154,6 @@ const markNotificationRead = asyncHandler(async (req, res) => {
     }
     res.status(201).json({ status: true, message: "Done" });
   } catch (error) {
-    console.log(error);
   }
 });
 

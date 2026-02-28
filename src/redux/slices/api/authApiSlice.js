@@ -18,7 +18,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
-      invalidatesTags: ['User'], // ← добавляем инвалидацию
+      invalidatesTags: ['User'], //  добавляем инвалидацию
     }),
     logout: builder.mutation({
       query: () => ({

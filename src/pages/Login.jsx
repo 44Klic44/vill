@@ -24,8 +24,7 @@ const navigate = useNavigate();
 const [login, { isLoading }] = useLoginMutation();
 const submitHandler = async (data) => {
   try {
-    const result = await login(data).unwrap(); // ✅ добавляем unwrap
-    console.log(result);
+    const result = await login(data).unwrap(); 
 dispatch(setCredentials(result.user));
     navigate('/dashboard');
   } catch (error) {

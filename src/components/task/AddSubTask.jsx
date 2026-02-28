@@ -15,7 +15,6 @@ const AddSubTask = ({ open, setOpen, id }) => {
   } = useForm();
 
   const handleOnSubmit = async (data) => {
-    console.log("Subtask data:", data, "for task id:", id);
     toast.success("Subtask added (demo)");
     setTimeout(() => setOpen(false), 500);
   };

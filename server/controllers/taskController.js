@@ -66,7 +66,6 @@ const createTask = asyncHandler(async (req, res) => {
       .status(200)
       .json({ status: true, task, message: "Task created successfully." });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ status: false, message: error.message });
   }
 });
@@ -204,7 +203,6 @@ const updateSubTaskStage = asyncHandler(async (req, res) => {
         : "Task has been marked uncompleted",
     });
   } catch (error) {
-    console.log(error);
     return res.status(400).json({ status: false, message: error.message });
   }
 });
@@ -294,7 +292,6 @@ const getTask = asyncHandler(async (req, res) => {
       task,
     });
   } catch (error) {
-    console.log(error);
     throw new Error("Failed to fetch task", error);
   }
 });
@@ -441,7 +438,6 @@ const dashboardStatistics = asyncHandler(async (req, res) => {
       .status(200)
       .json({ status: true, ...summary, message: "Successfully." });
   } catch (error) {
-    console.log(error);
     return res.status(400).json({ status: false, message: error.message });
   }
 });

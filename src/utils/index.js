@@ -14,7 +14,6 @@ export function dateFormatter(dateString) {
   return `${year}-${month}-${day}`;
 }
 
-// Безопасное получение инициалов
 export function getInitials(fullName) {
   if (!fullName || typeof fullName !== 'string') return "??";
   const names = fullName.trim().split(" ");

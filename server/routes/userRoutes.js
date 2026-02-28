@@ -13,7 +13,6 @@ import {
   updateUserProfile,
 } from "../controllers/userController.js";
 import { isAdminRoute, protectRoute } from "../middlewares/authMiddleware.js";
-console.log('Импортированная loginUser:', loginUser);
 
 const router = express.Router();
 
@@ -28,7 +27,6 @@ router.get("/get-status", protectRoute, isAdminRoute, getUserTaskStatus);
 router.put("/profile", protectRoute, updateUserProfile);
 router.put("/read-noti", protectRoute, markNotificationRead);
 router.put("/change-password", protectRoute, changeUserPassword);
-//   FOR ADMIN ONLY - ADMIN ROUTES
 router
   .route("/:id")
   .put(protectRoute, isAdminRoute, activateUserProfile)

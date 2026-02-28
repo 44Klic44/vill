@@ -19,9 +19,9 @@ import { setOpenSidebar } from "./redux/slices/authSlice";
 function Layout(){
   const {user} = useSelector((state) => state.auth)
   const location = useLocation()
- const isDev = true // 👈 временно чтобы редактировать страницу dashboard потом удалить!!!
-  //  return user ? ( 👈 Это правильная проверка ее нужно будет восстановить !!!
-  return user || isDev ? ( //👈 Это временная проверка для редактирования страниц потом удалить !!!
+ const isDev = true 
+  
+  return user || isDev ? ( 
     <div className="w-full h-screen flex flex-col md:flex-row">
       {/* Левая панель навигации */}
       <div className="w-full md:w-1/5 h-screen bg-white sticky top-0 hidden md:block">
@@ -39,7 +39,6 @@ function Layout(){
           <Navbar/>
         </div>
         
-        {/* Прокручиваемый контент */}
         <div className="flex-1 overflow-y-auto p-4 2xl:px-10">
           <Outlet/>
         </div>

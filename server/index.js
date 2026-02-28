@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use((req, res, next) => {
-  console.log(`🌐 Incoming request: ${req.method} ${req.url}`);
   next();
 });
 
@@ -39,11 +38,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// ✅ Подключаем маршруты API (до обработчиков ошибок)
 app.use("/api", routes);
 
-// ❗ Обработчики ошибок должны быть после всех маршрутов
 app.use(routeNotFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Server listening on ${PORT}`));

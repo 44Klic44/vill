@@ -128,7 +128,6 @@ const TaskDetails = () => {
       <h1 className='text-2xl text-gray-600 font-bold'>{task?.title}</h1>
 
       <Tabs tabs={TABS} selected={selected} setSelected={setSelected}>
-        {/* Панель 1: Детали задачи */}
         <div className='w-full flex flex-col md:flex-row gap-5 2xl:gap-8 bg-white shadow-md p-8 overflow-y-auto'>
           {/* Левая колонка — детали задачи */}
           <div className='w-full md:w-1/2 space-y-8'>
@@ -244,15 +243,11 @@ const TaskDetails = () => {
             )}
           </div>
 
-          {/* Правая колонка — раньше была assets, теперь убрана */}
           <div className='w-full md:w-1/2 space-y-8'>
-            {/* Можно оставить пустым или добавить что-то другое */}
             <p className='text-lg font-semibold'>Additional Info</p>
-            {/* Например, можно показать здесь какие-то метаданные или оставить пустым */}
           </div>
         </div>
 
-        {/* Панель 2: Activities */}
         <Activities activity={task?.activities} taskId={task._id} refetch={refetch} />
       </Tabs>
     </div>

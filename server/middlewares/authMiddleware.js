@@ -3,12 +3,9 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
 const protectRoute = asyncHandler(async (req, res, next) => {
-  console.log('✅ protectRoute: пользователь аутентифицирован', req.user);
 
   let token = req.cookies.token;
-  console.log("Cookies received:", req.cookies);
 
-  // Если токена нет в куках, пробуем взять из заголовка Authorization
   if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }

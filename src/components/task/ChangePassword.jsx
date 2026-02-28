@@ -19,26 +19,20 @@ const ChangePassword = ({ open, setOpen }) => {
   const [changeUserPassword, { isLoading }] = useChangePasswordMutation();
 
   const handleOnSubmit = async (data) => {
-    console.log("===== CHANGE PASSWORD SUBMIT =====");
-    console.log("Form Data:", data);
+   
 
     try {
       const response = await changeUserPassword({
         oldPassword: data.oldPassword,
-        password: data.password, // 🔥 ВАЖНО — отправляем password
+        password: data.password, 
       }).unwrap();
 
-      console.log("Server response:", response);
 
       toast.success("Password changed successfully");
       reset();
       setOpen(false);
     } catch (err) {
-      console.log("===== PASSWORD ERROR =====");
-      console.log("Full error object:", err);
-      console.log("Status:", err?.status);
-      console.log("Data:", err?.data);
-      console.log("Message:", err?.data?.message);
+    
 
       toast.error(err?.data?.message || "Failed to change password");
     }
