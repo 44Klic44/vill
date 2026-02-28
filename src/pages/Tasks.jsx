@@ -15,6 +15,18 @@ import AddTask from '../components/task/AddTask';
 
 import { useGetAllTaskQuery } from '../redux/slices/api/taskApiSlice';
 
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    setMatches(media.matches);
+    const listener = (e) => setMatches(e.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, [query]);
+  return matches;
+};
+
 const TABS = [
   { title: 'Board View', icon: <MdGridView /> },
   { title: 'List View', icon: <FaList /> },
@@ -32,6 +44,8 @@ const Tasks = () => {
   const [open, setOpen] = useState(false);
   const [initialStage, setInitialStage] = useState('todo');
 
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   const stageFilter = status
     ? status === 'in-progress'
       ? 'in progress'
@@ -43,7 +57,7 @@ const Tasks = () => {
     isLoading,
     isError,
     error,
-    refetch
+    refetch,
   } = useGetAllTaskQuery({
     strQuery: stageFilter,
     isTrashed: false,
@@ -87,10 +101,12 @@ const Tasks = () => {
         )}
       </div>
 
-      <Tabs tabs={TABS} selected={selected} setSelected={setSelected} />
+      {!isMobile && (
+        <Tabs tabs={TABS} selected={selected} setSelected={setSelected} />
+      )}
 
       {!status && (
-        <div className='w-full flex justify-between gap-4 md:gap-x-12 py-4'>
+        <div className='w-full flex justify-between gap-1 md:gap-x-12 py-4'>
           <TaskTitle
             label='To Do'
             className={TASK_TYPE.todo}
@@ -109,11 +125,13 @@ const Tasks = () => {
         </div>
       )}
 
-      {selected === 0 ? (
-  <BoardView tasks={tasks} refetch={refetch} />
-) : (
-  <Table tasks={tasks} refetch={refetch} />
-)}
+      {isMobile ? (
+        <BoardView tasks={tasks} refetch={refetch} />
+      ) : selected === 0 ? (
+        <BoardView tasks={tasks} refetch={refetch} />
+      ) : (
+        <Table tasks={tasks} refetch={refetch} />
+      )}
 
       <AddTask
         open={open}

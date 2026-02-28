@@ -1,16 +1,16 @@
-import { Listbox, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { BsChevronExpand } from "react-icons/bs";
-import clsx from "clsx";
-import { getInitials } from "../../utils/index"; // подняться на два уровня до src/utils
-import { MdCheck } from "react-icons/md";
-import { useGetTeamListsQuery } from "../../redux/slices/api/userApiSlice";
+import { Listbox, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
+import { BsChevronExpand } from 'react-icons/bs';
+import clsx from 'clsx';
+import { getInitials } from '../../utils/index';
+import { MdCheck } from 'react-icons/md';
+import { useGetTeamListsQuery } from '../../redux/slices/api/userApiSlice';
 
 const UserList = ({ selectedUsers, setSelectedUsers }) => {
   const { data: users, isLoading, error } = useGetTeamListsQuery();
 
-  if (isLoading) return <p className="text-gray-500">Loading users...</p>;
-  if (error) return <p className="text-red-500">Error loading users</p>;
+  if (isLoading) return <p className='text-gray-500'>Loading users...</p>;
+  if (error) return <p className='text-red-500'>Error loading users</p>;
 
   return (
     <div>
@@ -19,7 +19,7 @@ const UserList = ({ selectedUsers, setSelectedUsers }) => {
         <div className='relative mt-1'>
           <Listbox.Button className='h-[44px] relative w-full cursor-default rounded bg-white pl-3 pr-10 text-left px-3 py-2.5 2xl:py-3 border border-gray-300 sm:text-sm'>
             <span className='block truncate'>
-              {selectedUsers?.map((user) => user.name).join(", ")}
+              {selectedUsers?.map((user) => user.name).join(', ')}
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <BsChevronExpand className='h-5 w-5 text-gray-400' aria-hidden='true' />
@@ -38,7 +38,7 @@ const UserList = ({ selectedUsers, setSelectedUsers }) => {
                   key={user._id}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-amber-100 text-amber-900" : "text-gray-900"
+                      active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                     }`
                   }
                   value={user}
@@ -47,8 +47,8 @@ const UserList = ({ selectedUsers, setSelectedUsers }) => {
                     <>
                       <div
                         className={clsx(
-                          "flex items-center gap-2 truncate",
-                          selected ? "font-medium" : "font-normal"
+                          'flex items-center gap-2 truncate',
+                          selected ? 'font-medium' : 'font-normal'
                         )}
                       >
                         <div className='w-6 h-6 rounded-full text-white flex items-center justify-center bg-violet-600'>

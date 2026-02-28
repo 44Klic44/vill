@@ -10,11 +10,11 @@ const Table = ({ tasks, refetch }) => {
         <table className="w-full mb-5">
           <thead className='border-b border-gray-300 dark:border-gray-600'>
             <tr className='text-black dark:text-white text-left'>
-              <th className='py-2'>Task Title</th>
-              <th className='py-2'>Priority</th>
-              <th className='py-2'>Stage</th>
-              <th className='py-2 line-clamp-1'>Due Date</th>
-              <th className='py-2 text-right'>Actions</th>
+              <th className='py-2 whitespace-nowrap'>Task Title</th>
+              <th className='py-2 whitespace-nowrap'>Priority</th>
+              <th className='py-2 whitespace-nowrap'>Stage</th>
+              <th className='py-2 whitespace-nowrap'>Due Date</th>
+              <th className='py-2 whitespace-nowrap text-right'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -23,7 +23,7 @@ const Table = ({ tasks, refetch }) => {
                 <td className='py-2'>
                   <div className='flex items-center gap-2'>
                     <div className={clsx('w-3 h-3 rounded-full', TASK_TYPE[task.stage])} />
-                    <p className='line-clamp-2 text-base text-black dark:text-gray-400'>
+                    <p className='line-clamp-2 text-base text-black dark:text-gray-400 break-words max-w-[150px] sm:max-w-none'>
                       {task.title}
                     </p>
                   </div>
@@ -34,7 +34,7 @@ const Table = ({ tasks, refetch }) => {
                   </span>
                 </td>
                 <td className='py-2 capitalize'>{task.stage}</td>
-                <td className='py-2 text-sm'>{formatDate(new Date(task.date))}</td>
+                <td className='py-2 text-sm whitespace-nowrap'>{formatDate(new Date(task.date))}</td>
                 <td className='py-2 flex gap-1 justify-end'>
                   <TaskDialog task={task} refetch={refetch} />
                 </td>

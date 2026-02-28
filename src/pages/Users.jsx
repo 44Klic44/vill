@@ -23,65 +23,69 @@ const getInitials = (name) => {
     .slice(0, 2);
 };
 
+// Хук для определения мобильного устройства
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    setMatches(media.matches);
+    const listener = (e) => setMatches(e.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, [query]);
+  return matches;
+};
+
 const Users = () => {
-  const [open, setOpen] = useState(false);          // модалка добавления/редактирования
-  const [openDialog, setOpenDialog] = useState(false); // модалка подтверждения удаления
-  const [openAction, setOpenAction] = useState(false); // модалка изменения статуса
-  const [selected, setSelected] = useState(null);    // выбранный пользователь (для редактирования, удаления, смены статуса)
+  const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openAction, setOpenAction] = useState(false);
+  const [selected, setSelected] = useState(null);
 
-  // Запрос списка пользователей с сервера (кеш автоматически инвалидируется мутациями)
+  const isMobile = useMediaQuery('(max-width: 640px)');
+
   const { data, refetch } = useGetTeamListsQuery();
-
-  // Мутации
   const [deleteUser] = useDeleteUserMutation();
   const [userAction] = useUserActionMutation();
 
-  // Сброс выбранного пользователя при закрытии модалки добавления/редактирования
   useEffect(() => {
     if (!open) {
       setSelected(null);
     }
   }, [open]);
 
-  // Обработчик для кнопки "Add New User" – сбрасывает выделение и открывает пустую форму
   const addNewClick = () => {
     setSelected(null);
     setOpen(true);
   };
 
-  // Клик по кнопке "Delete"
   const deleteClick = (id) => {
     setSelected(id);
     setOpenDialog(true);
   };
 
-  // Клик по кнопке "Edit"
   const editClick = (el) => {
     setSelected(el);
     setOpen(true);
   };
 
-  // Клик по статусу пользователя (Active/Disabled)
   const userStatusClick = (el) => {
     setSelected(el);
     setOpenAction(true);
   };
 
-  // Подтверждение изменения статуса
   const userActionHandler = async () => {
     try {
       await userAction({ isActive: !selected?.isActive, id: selected?._id }).unwrap();
       toast.success("User status updated successfully");
       setSelected(null);
-      refetch();        // можно оставить для немедленного обновления, хотя теги уже должны сработать
+      refetch();
       setOpenAction(false);
     } catch (err) {
-      console.log(err);
       toast.error(err?.data?.message || err.error);
     }
   };
 
-  // Подтверждение удаления
   const deleteHandler = async () => {
     try {
       await deleteUser(selected).unwrap();
@@ -90,12 +94,11 @@ const Users = () => {
       refetch();
       setOpenDialog(false);
     } catch (err) {
-      console.log(err);
       toast.error(err?.data?.message || err.error);
     }
   };
 
-  // Заголовок таблицы (вынесен для читаемости)
+  // Заголовок таблицы (десктоп)
   const TableHeader = () => (
     <thead className="border-b border-gray-300 dark:border-gray-600">
       <tr className="text-black dark:text-white text-left">
@@ -109,7 +112,7 @@ const Users = () => {
     </thead>
   );
 
-  // Строка таблицы для одного пользователя
+  // Строка таблицы (десктоп)
   const TableRow = ({ user }) => (
     <tr className="border-b border-gray-200 text-gray-600 hover:bg-gray-400/10">
       <td className="p-2">
@@ -153,39 +156,85 @@ const Users = () => {
     </tr>
   );
 
+  // Карточка для мобильной версии
+  const MobileCard = ({ user }) => (
+    <div className="bg-white dark:bg-gray-800 p-3 rounded shadow flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full text-white flex items-center justify-center text-xs bg-blue-700">
+            {getInitials(user.name)}
+          </div>
+          <span className="font-medium">{user.name}</span>
+        </div>
+        <button
+          onClick={() => userStatusClick(user)}
+          className={clsx(
+            "px-3 py-1 rounded-full text-xs",
+            user?.isActive ? "bg-blue-200" : "bg-yellow-100"
+          )}
+        >
+          {user?.isActive ? "Active" : "Disabled"}
+        </button>
+      </div>
+      <div className="text-sm text-gray-600 dark:text-gray-400">
+        <p>{user.title} • {user.role}</p>
+        <p className="truncate">{user.email}</p>
+      </div>
+      <div className="flex justify-end gap-2 mt-1">
+        <Button
+          label="Edit"
+          type="button"
+          onClick={() => editClick(user)}
+          className="text-blue-600 hover:text-blue-500 text-sm px-2 py-1"
+        />
+        <Button
+          label="Delete"
+          type="button"
+          onClick={() => deleteClick(user?._id)}
+          className="text-red-700 hover:text-red-500 text-sm px-2 py-1"
+        />
+      </div>
+    </div>
+  );
+
   return (
     <>
       <div className="w-full md:px-1 px-0 mb-6">
-        {/* Заголовок и кнопка добавления */}
         <div className="flex items-center justify-between mb-8">
           <Title title="Team Members" />
           <Button
             label="Add New User"
             icon={<IoMdAdd className="text-lg" />}
             className="flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5"
-            onClick={addNewClick} // используем новый обработчик
+            onClick={addNewClick}
           />
         </div>
 
-        {/* Таблица пользователей */}
-        <div className="bg-white dark:bg-[#1f1f1f] px-2 md:px-4 py-4 shadow rounded">
-          <div className="overflow-x-auto">
-            <table className="w-full mb-5">
-              <TableHeader />
-              <tbody>
-                {data?.map((user) => (
-                  <TableRow key={user._id} user={user} />
-                ))}
-              </tbody>
-            </table>
+        {isMobile ? (
+          // Мобильная версия: карточки
+          <div className="space-y-2">
+            {data?.map((user) => (
+              <MobileCard key={user._id} user={user} />
+            ))}
           </div>
-        </div>
+        ) : (
+          // Десктопная версия: таблица
+          <div className="bg-white dark:bg-[#1f1f1f] px-2 md:px-4 py-4 shadow rounded">
+            <div className="overflow-x-auto">
+              <table className="w-full mb-5">
+                <TableHeader />
+                <tbody>
+                  {data?.map((user) => (
+                    <TableRow key={user._id} user={user} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Модалка добавления/редактирования */}
       <AddUser open={open} setOpen={setOpen} userData={selected} />
-
-      {/* Модалка подтверждения удаления */}
       <Dialogs
         open={openDialog}
         setOpen={setOpenDialog}
@@ -193,8 +242,6 @@ const Users = () => {
         type="delete"
         msg="Are you sure you want to delete this user?"
       />
-
-      {/* Модалка изменения статуса */}
       <UserAction
         open={openAction}
         setOpen={setOpenAction}

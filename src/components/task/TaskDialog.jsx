@@ -3,27 +3,15 @@ import { Menu, Transition } from '@headlessui/react';
 import { HiDotsVertical } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
-import { MdContentCopy, MdRemoveRedEye } from 'react-icons/md';
-import { useDuplicateTaskMutation, useTrashTastMutation, useChangeTaskStageMutation } from '../../redux/slices/api/taskApiSlice';
+import { MdRemoveRedEye } from 'react-icons/md';
+import { useTrashTastMutation, useChangeTaskStageMutation } from '../../redux/slices/api/taskApiSlice';
 import EditTaskModal from './EditTaskModal';
 
 const TaskDialog = ({ task, refetch }) => {
-  const [duplicateTask] = useDuplicateTaskMutation();
   const [trashTask] = useTrashTastMutation();
   const [changeStage] = useChangeTaskStageMutation();
   const [editOpen, setEditOpen] = useState(false);
-
-  const handleDuplicate = async () => {
-    if (window.confirm('Duplicate this task?')) {
-      try {
-        await duplicateTask(task._id).unwrap();
-        alert('Task duplicated');
-        refetch();
-      } catch (error) {
-        alert(error?.data?.message || 'Failed to duplicate');
-      }
-    }
-  };
+  const [showStageMenu, setShowStageMenu] = useState(false);
 
   const handleTrash = async () => {
     if (window.confirm('Move this task to trash?')) {
@@ -42,6 +30,7 @@ const TaskDialog = ({ task, refetch }) => {
       await changeStage({ id: task._id, stage: newStage }).unwrap();
       alert(`Stage changed to ${newStage}`);
       refetch();
+      setShowStageMenu(false);
     } catch (error) {
       alert(error?.data?.message || 'Failed to change stage');
     }
@@ -65,7 +54,7 @@ const TaskDialog = ({ task, refetch }) => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-50">
+          <Menu.Items className="absolute right-0 mt-2 w-48 sm:w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-50">
             <div className="px-1 py-1">
               <Menu.Item>
                 {({ active }) => (
@@ -93,46 +82,30 @@ const TaskDialog = ({ task, refetch }) => {
                   </button>
                 )}
               </Menu.Item>
-              {/* <Menu.Item>
-                {({ active }) => (
-                  <button
-                    onClick={handleDuplicate}
-                    className={`${
-                      active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                  >
-                    <MdContentCopy className="mr-2 h-5 w-5" aria-hidden="true" />
-                    Duplicate
-                  </button>
-                )}
-              </Menu.Item> */}
 
-              {/* Подменю изменения статуса */}
-              <Menu.Item>
-                {({ active }) => (
-                  <div className="relative group">
-                    <button
-                      className={`${
-                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    >
-                      <span>Change Stage</span>
-                      <span className="ml-auto">▶</span>
-                    </button>
-                    <div className="absolute left-full top-0 hidden group-hover:block bg-white shadow-lg rounded-md z-50 min-w-[120px]">
-                      {['todo', 'in progress', 'completed'].map(stage => (
-                        <button
-                          key={stage}
-                          onClick={() => handleStageChange(stage)}
-                          className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left capitalize"
-                        >
-                          {stage}
-                        </button>
-                      ))}
-                    </div>
+              {/* Change Stage с внутренним подменю */}
+              <div className="px-2 py-1">
+                <button
+                  onClick={() => setShowStageMenu(!showStageMenu)}
+                  className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm hover:bg-gray-100"
+                >
+                  <span>Change Stage</span>
+                  <span>{showStageMenu ? '▲' : '▼'}</span>
+                </button>
+                {showStageMenu && (
+                  <div className="mt-1 space-y-1 pl-2">
+                    {['todo', 'in progress', 'completed'].map(stage => (
+                      <button
+                        key={stage}
+                        onClick={() => handleStageChange(stage)}
+                        className="block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 rounded capitalize"
+                      >
+                        {stage}
+                      </button>
+                    ))}
                   </div>
                 )}
-              </Menu.Item>
+              </div>
 
               <Menu.Item>
                 {({ active }) => (
