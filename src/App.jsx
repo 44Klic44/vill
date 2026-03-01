@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import Users from "./pages/Users"
