@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { jsxs } from "react/jsx-runtime";
 
 const dbConnection = async () => {
   try {
