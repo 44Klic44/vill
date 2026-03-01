@@ -19,8 +19,8 @@ export const createJWT = (res, userId) => {
 
 res.cookie("token", token, {
   httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // true для HTTPS
-    sameSite: 'lax', // всегда lax (работает и для HTTP, и для HTTPS)
+     secure: true, // обязательно true, так как бэкенд на HTTPS
+    sameSite: 'none', // разрешает отправку с другого домена
   maxAge: 24 * 60 * 60 * 1000,
 });
 };
