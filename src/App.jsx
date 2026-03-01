@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux'
 import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
 import { Transition } from '@headlessui/react'
-import { Fragment, useRef } from "react";
+import { Fragment, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { IoMdClose } from "react-icons/io";
 import { setOpenSidebar } from "./redux/slices/authSlice";
@@ -19,26 +19,18 @@ import { setOpenSidebar } from "./redux/slices/authSlice";
 function Layout(){
   const {user} = useSelector((state) => state.auth)
   const location = useLocation()
- const isDev = true 
+  const isDev = true 
   
   return user || isDev ? ( 
     <div className="w-full h-screen flex flex-col md:flex-row">
-      {/* Левая панель навигации */}
       <div className="w-full md:w-1/5 h-screen bg-white sticky top-0 hidden md:block">
         <Sidebar/>
       </div>
-
-   {/* Мобильная навигация */}
-    <MobileSidebar/>
-
-
-      {/* Основная область с Navbar и контентом */}
+      <MobileSidebar/>
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Navbar - фиксированная верхняя панель */}
         <div className="sticky top-0 z-10 bg-white dark:bg-[#1f1f1f]">
           <Navbar/>
         </div>
-        
         <div className="flex-1 overflow-y-auto p-4 2xl:px-10">
           <Outlet/>
         </div>
@@ -49,7 +41,7 @@ function Layout(){
   )
 }
 
-const  MobileSidebar = ()=> {
+const MobileSidebar = ()=> {
   const { isSidebarOpen } = useSelector((state) => state.auth);
   const mobileMenuRef = useRef(null);
   const dispatch = useDispatch();
@@ -59,55 +51,62 @@ const  MobileSidebar = ()=> {
   };
 
   return (
-    <>
-      <Transition
-        show={isSidebarOpen}
-        as={Fragment}
-        enter='transition-opacity duration-700'
-        enterFrom='opacity-x-10'
-        enterTo='opacity-x-100'
-        leave='transition-opacity duration-700'
-        leaveFrom='opacity-x-100'
-        leaveTo='opacity-x-0'
-      >
-        {(ref) => (
-          <div
-            ref={(node) => (mobileMenuRef.current = node)}
-            className={`md:hidden w-full h-full bg-black/40 transition-transform duration-700 transform
-             ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
-            onClick={() => closeSidebar()}
-          >
-            <div className='bg-white w-3/4 h-full'>
-              <div className='w-full flex justify-end px-5 pt-5'>
-                <button
-                  onClick={() => closeSidebar()}
-                  className='flex justify-end items-end'
-                >
-                  <IoMdClose size={25} />
-                </button>
-              </div>
-
-              <div className='-mt-10'>
-                <Sidebar />
-              </div>
+    <Transition
+      show={isSidebarOpen}
+      as={Fragment}
+      enter='transition-opacity duration-700'
+      enterFrom='opacity-x-10'
+      enterTo='opacity-x-100'
+      leave='transition-opacity duration-700'
+      leaveFrom='opacity-x-100'
+      leaveTo='opacity-x-0'
+    >
+      {(ref) => (
+        <div
+          ref={(node) => (mobileMenuRef.current = node)}
+          className={`md:hidden w-full h-full bg-black/40 transition-transform duration-700 transform
+           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+          onClick={() => closeSidebar()}
+        >
+          <div className='bg-white w-3/4 h-full'>
+            <div className='w-full flex justify-end px-5 pt-5'>
+              <button
+                onClick={() => closeSidebar()}
+                className='flex justify-end items-end'
+              >
+                <IoMdClose size={25} />
+              </button>
+            </div>
+            <div className='-mt-10'>
+              <Sidebar />
             </div>
           </div>
-        )}
-      </Transition>
-    </>
+        </div>
+      )}
+    </Transition>
   );
 };
 
-
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const redirectTo = sessionStorage.getItem('redirectTo');
+    if (redirectTo && redirectTo !== '/vill/') {
+      sessionStorage.removeItem('redirectTo');
+      // Убираем префикс /vill и выполняем переход
+      navigate(redirectTo.replace('/vill', ''), { replace: true });
+    }
+  }, [navigate]);
+
   return (
     <main className='w-full min-h-screen bg-[#f3f4f6]'>
       <Routes>
         <Route element={<Layout/>}>
           <Route index element={<Navigate to="/dashboard"/>}/>
           <Route path="/dashboard" element={<Dashboard/>}/>
-         <Route path="/tasks" element={<Tasks />} />
-         <Route path="/tasks/:status" element={<Tasks />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/tasks/:status" element={<Tasks />} />
           <Route path="/completed/:status" element={<Tasks/>}/>
           <Route path="/in-progress/:status" element={<Tasks/>}/>
           <Route path="/todo/:status" element={<Tasks/>}/>
@@ -122,4 +121,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
